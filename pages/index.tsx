@@ -15,6 +15,12 @@ async function testCreateUser(name: string, email: string) {
   console.log(data);
 }
 
+async function getItemsByUser() {
+  const response = await fetch(`/api/test?id=7`);
+  const data = await response.json();
+  console.log(data);
+}
+
 const Home: NextPage = () => {
   return (
     <div className={styles.container}>
@@ -32,6 +38,7 @@ const Home: NextPage = () => {
         <button onClick={() => testCreateUser("John Doe", "foo@bar.com")}>
           skrrt
         </button>
+        <button onClick={() => getItemsByUser()}>getget</button>
 
         <p className={styles.description}>
           Get started by editing{" "}
