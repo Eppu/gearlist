@@ -2,6 +2,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
+import LoginButton from "../components/loginButton";
+import { useSession } from "next-auth/react";
 
 async function testCreateUser(name: string, email: string) {
   const response = await fetch("/api/createUser", {
@@ -15,13 +17,15 @@ async function testCreateUser(name: string, email: string) {
   console.log(data);
 }
 
-async function getItemsByUser() {
-  const response = await fetch(`/api/test?id=7`);
+async function getItemsByUser(userId: number) {
+  const response = await fetch(`/api/test?id=${userId}`);
   const data = await response.json();
   console.log(data);
 }
 
-const Home: NextPage = () => {
+function Home() {
+  const { data: session, status } = useSession();
+  session && console.log(session);
   return (
     <div className={styles.container}>
       <Head>
@@ -34,11 +38,17 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+        <LoginButton />
 
-        <button onClick={() => testCreateUser("John Doe", "foo@bar.com")}>
-          skrrt
-        </button>
-        <button onClick={() => getItemsByUser()}>getget</button>
+        <button onClick={() => getItemsByUser(1)}>getget</button>
+        {
+          // if session exists, show button to get items by user id
+          // session && (
+          //   <button onClick={() => getItemsByUser(session.user?.userId)}>
+          //     get items by user id
+          //   </button>
+          // )
+        }
 
         <p className={styles.description}>
           Get started by editing{" "}
@@ -90,6 +100,6 @@ const Home: NextPage = () => {
       </footer>
     </div>
   );
-};
+}
 
 export default Home;
