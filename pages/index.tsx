@@ -43,11 +43,11 @@ function Home() {
         <button onClick={() => getItemsByUser(1)}>getget</button>
         {
           // if session exists, show button to get items by user id
-          // session && (
-          //   <button onClick={() => getItemsByUser(session.user?.userId)}>
-          //     get items by user id
-          //   </button>
-          // )
+          session && (
+            <button onClick={() => getItemsByUser(session.user?.id)}>
+              get items by user id
+            </button>
+          )
         }
 
         <p className={styles.description}>

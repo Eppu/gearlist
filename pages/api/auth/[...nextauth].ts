@@ -13,4 +13,15 @@ export default NextAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     }),
   ],
+
+  callbacks: {
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token from a provider.
+      session.userId = user.id;
+
+      session.user = user;
+
+      return session;
+    },
+  },
 });
