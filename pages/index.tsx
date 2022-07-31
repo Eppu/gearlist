@@ -95,7 +95,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   }
   const items = await prisma.item.findMany({
     where: {
-      authorId: session.user?.id,
+      authorId: session.user.id,
     },
   });
 
