@@ -1,4 +1,4 @@
-import { Category, PrismaClient } from "@prisma/client";
+import { Category, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -7,20 +7,20 @@ async function main() {
   // Data for user seed
   const users = [
     {
-      name: "John Doe",
-      email: "test@example.com",
+      name: 'John Doe',
+      email: 'test@example.com',
     },
     {
-      name: "Jane Doe",
-      email: "test1@example.com",
+      name: 'Jane Doe',
+      email: 'test1@example.com',
     },
   ];
 
   // Data for template seed
   const templates = [
     {
-      brand: "Leica",
-      model: "M-P-100",
+      brand: 'Leica',
+      model: 'M-P-100',
       category: Category.CAMERA,
     },
   ];
@@ -28,53 +28,53 @@ async function main() {
   // Data for item seed
   const items = [
     {
-      title: "Item 1",
-      serialNumber: "12345",
+      title: 'Item 1',
+      serialNumber: '12345',
       price: 100.0,
       published: true,
-      image: "https://picsum.photos/200",
+      image: 'https://picsum.photos/200',
       authorId: 1,
       templateId: 1,
     },
     {
-      title: "Item 2",
-      serialNumber: "23456",
+      title: 'Item 2',
+      serialNumber: '23456',
       price: 57.5,
       published: false,
-      image: "https://picsum.photos/200",
+      image: 'https://picsum.photos/200',
       authorId: 2,
       templateId: 1,
     },
     {
-      title: "Item 3",
-      serialNumber: "34567",
+      title: 'Item 3',
+      serialNumber: '34567',
       price: 123.0,
       published: true,
-      image: "https://picsum.photos/200",
+      image: 'https://picsum.photos/200',
       authorId: 2,
       templateId: 1,
     },
   ];
 
   // Create users
-  console.log("Creating users...");
+  console.log('Creating users...');
   await prisma.user.createMany({
     data: users,
   });
 
   // Create templates
-  console.log("Creating templates...");
+  console.log('Creating templates...');
   await prisma.itemTemplate.createMany({
     data: templates,
   });
 
   // Create items
-  console.log("Creating items...");
+  console.log('Creating items...');
   await prisma.item.createMany({
     data: items,
   });
 
-  console.log("Data seed finished.");
+  console.log('Data seed finished.');
 }
 
 main()

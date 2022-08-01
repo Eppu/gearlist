@@ -1,17 +1,17 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import styles from "../styles/Home.module.css";
-import LoginButton from "../components/loginButton";
-import { useSession, getSession } from "next-auth/react";
-import { Item, PrismaClient } from "@prisma/client";
-import { GetServerSideProps } from "next";
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
+import LoginButton from '../components/loginButton';
+import { useSession, getSession } from 'next-auth/react';
+import { Item, PrismaClient } from '@prisma/client';
+import { GetServerSideProps } from 'next';
 
 async function testCreateUser(name: string, email: string) {
-  const response = await fetch("/api/createUser", {
-    method: "POST",
+  const response = await fetch('/api/createUser', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({ name, email }),
   });
@@ -74,7 +74,7 @@ function Home({ items }: { items: Item[] }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{" "}
+          Powered by{' '}
           <span className={styles.logo}>
             <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
           </span>
@@ -110,7 +110,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   res.statusCode = 200;
   return {
     props: {
-      message: "hello",
+      message: 'hello',
       items: cleanedItems,
     },
   };

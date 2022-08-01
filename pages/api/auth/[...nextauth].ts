@@ -1,7 +1,7 @@
-import NextAuth from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-import { PrismaClient } from "@prisma/client";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import NextAuth from 'next-auth';
+import DiscordProvider from 'next-auth/providers/discord';
+import { PrismaClient } from '@prisma/client';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 
 const prisma = new PrismaClient();
 
