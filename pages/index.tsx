@@ -2,6 +2,10 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
+import LoginButton from "../components/loginButton";
+import { useSession, getSession } from "next-auth/react";
+import { Item, PrismaClient } from "@prisma/client";
+import { GetServerSideProps } from "next";
 
 async function testCreateUser(name: string, email: string) {
   const response = await fetch("/api/createUser", {
@@ -15,13 +19,16 @@ async function testCreateUser(name: string, email: string) {
   console.log(data);
 }
 
-async function getItemsByUser() {
-  const response = await fetch(`/api/test?id=7`);
+async function getItemsByUser(userId: number) {
+  const response = await fetch(`/api/test?id=${userId}`);
   const data = await response.json();
   console.log(data);
 }
 
-const Home: NextPage = () => {
+function Home({ items }: { items: Item[] }) {
+  const { data: session, status } = useSession();
+  session && console.log(session);
+  console.log(items);
   return (
     <div className={styles.container}>
       <Head>
@@ -34,46 +41,31 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
+        <LoginButton />
 
-        <button onClick={() => testCreateUser("John Doe", "foo@bar.com")}>
-          skrrt
-        </button>
-        <button onClick={() => getItemsByUser()}>getget</button>
+        <button onClick={() => getItemsByUser(1)}>getget</button>
+        {
+          // if session exists, show button to get items by user id
+          session && (
+            <button onClick={() => getItemsByUser(session.user?.id)}>
+              get items by user id
+            </button>
+          )
+        }
 
-        <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        {
+          // if props exists, show items
+          items && (
+            <ul>
+              {items.map((item) => (
+                <div key={item.id}>
+                  <h2>{item.title}</h2>
+                  Serial number: {item.serialNumber}
+                </div>
+              ))}
+            </ul>
+          )
+        }
       </main>
 
       <footer className={styles.footer}>
@@ -90,6 +82,38 @@ const Home: NextPage = () => {
       </footer>
     </div>
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const session = await getSession({ req });
+
+  const prisma = new PrismaClient();
+
+  if (!session) {
+    res.statusCode = 403;
+    return { props: { items: [] } };
+  }
+  const items = await prisma.item.findMany({
+    where: {
+      authorId: session.user.id,
+    },
+  });
+
+  const cleanedItems = items.map((item) => ({
+    ...item,
+    createdAt: item.createdAt.toISOString(),
+    updatedAt: item.updatedAt.toISOString(),
+  }));
+
+  console.log(cleanedItems);
+
+  res.statusCode = 200;
+  return {
+    props: {
+      message: "hello",
+      items: cleanedItems,
+    },
+  };
 };
 
 export default Home;
