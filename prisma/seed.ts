@@ -1,5 +1,6 @@
 import { Category, PrismaClient } from '@prisma/client';
 
+// This only ever runs once, so create a new client for each run
 const prisma = new PrismaClient();
 
 // Generate seed data based on the schema
@@ -86,12 +87,3 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
-
-// main()
-//   .catch((e) => {
-//     console.error(e);
-//     process.exit(1);
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect();
-//   });

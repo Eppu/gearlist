@@ -1,10 +1,10 @@
-import type { NextPage } from 'next';
+import { prisma } from '../lib/prisma';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import LoginButton from '../components/loginButton';
 import { useSession, getSession } from 'next-auth/react';
-import { Item, PrismaClient } from '@prisma/client';
+import { Item } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 
 async function testCreateUser(name: string, email: string) {
@@ -19,15 +19,14 @@ async function testCreateUser(name: string, email: string) {
   console.log(data);
 }
 
-async function getItemsByUser(userId: number) {
-  const response = await fetch(`/api/test?id=${userId}`);
+async function getItemsByUser() {
+  const response = await fetch(`/api/test`);
   const data = await response.json();
   console.log(data);
 }
 
 function Home({ items }: { items: Item[] }) {
   const { data: session, status } = useSession();
-  session && console.log(session);
   console.log(items);
   return (
     <div className={styles.container}>
@@ -43,14 +42,10 @@ function Home({ items }: { items: Item[] }) {
         </h1>
         <LoginButton />
 
-        <button onClick={() => getItemsByUser(1)}>getget</button>
+        <button onClick={() => getItemsByUser()}>getget</button>
         {
           // if session exists, show button to get items by user id
-          session && (
-            <button onClick={() => getItemsByUser(session.user?.id)}>
-              get items by user id
-            </button>
-          )
+          session && <button onClick={() => getItemsByUser()}>get items by user id</button>
         }
 
         {
@@ -86,8 +81,6 @@ function Home({ items }: { items: Item[] }) {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   const session = await getSession({ req });
-
-  const prisma = new PrismaClient();
 
   if (!session) {
     res.statusCode = 403;

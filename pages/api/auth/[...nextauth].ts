@@ -1,10 +1,8 @@
 import NextAuth from 'next-auth';
 import DiscordProvider from 'next-auth/providers/discord';
-import { PrismaClient } from '@prisma/client';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import type { NextAuthOptions } from 'next-auth';
-
-const prisma = new PrismaClient();
+import { prisma } from '../../../lib/prisma';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -19,9 +17,10 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
-      session.userId = user.id;
-
-      session.user = user;
+      if (!session.user.id) {
+        session.userId = user.id;
+        session.user = user;
+      }
 
       return session;
     },
