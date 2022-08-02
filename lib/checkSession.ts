@@ -3,9 +3,16 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { Session } from 'next-auth';
 
-export default async function checkSession(req: NextApiRequest, res: NextApiResponse<any>) {
+export default async function checkSession(
+  req: NextApiRequest,
+  res: NextApiResponse<any>
+) {
   // Get the session from the Next.js API
-  const session: Session | null = await unstable_getServerSession(req, res, authOptions);
+  const session: Session | null = await unstable_getServerSession(
+    req,
+    res,
+    authOptions
+  );
   // Make sure the session is valid
   if (!session) {
     res.status(401).json({ message: 'No active session found' });
@@ -25,8 +32,6 @@ export default async function checkSession(req: NextApiRequest, res: NextApiResp
     res.status(401).json({ message: 'Invalid user ID' });
     return;
   }
-
-  res.end();
 
   return session;
 }
