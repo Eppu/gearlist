@@ -19,6 +19,18 @@ async function testCreateUser(name: string, email: string) {
   console.log(data);
 }
 
+async function searchItemTemplates() {
+  const response = await fetch('/api/search', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query: 'leica' }),
+  });
+  const data = await response.json();
+  console.log(data);
+}
+
 async function getItemsByUser() {
   const response = await fetch(`/api/test`);
   const data = await response.json();
@@ -45,7 +57,16 @@ function Home({ items }: { items: Item[] }) {
         <button onClick={() => getItemsByUser()}>getget</button>
         {
           // if session exists, show button to get items by user id
-          session && <button onClick={() => getItemsByUser()}>get items by user id</button>
+          session && (
+            <>
+              <button onClick={() => getItemsByUser()}>
+                get items by user id
+              </button>
+              <button onClick={() => searchItemTemplates()}>
+                search item templates
+              </button>
+            </>
+          )
         }
 
         {
