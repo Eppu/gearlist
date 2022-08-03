@@ -18,26 +18,33 @@ export default async function handler(
   if (req.method === 'POST') {
     const searchTerm = req.body.query;
     // Find item templates that match the search term
-    await prisma.itemTemplate
-      .findMany({
-        where: {
-          brand: {
-            search: searchTerm as string,
-          },
-          OR: [
-            {
-              model: {
-                search: searchTerm as string,
-              },
+    if (searchTerm) {
+      await prisma.itemTemplate
+        .findMany({
+          where: {
+            brand: {
+              search: searchTerm as string,
             },
-          ],
-        },
-      })
-      .then((items) => {
-        res.status(200).json({ count: items.length, items });
-      })
-      .catch((err) => {
-        res.status(500).json({ message: 'Items retrieval failed', error: err });
-      });
+            OR: [
+              {
+                model: {
+                  search: searchTerm as string,
+                },
+              },
+            ],
+          },
+        })
+        .then((items) => {
+          res.status(200).json({ count: items.length, items });
+        })
+        .catch((err) => {
+          res
+            .status(500)
+            .json({ message: 'Items retrieval failed', error: err });
+        });
+    }
+    res.status(400).json({ message: 'No search term provided' });
+  } else {
+    res.status(405).json({ message: 'Method not allowed' });
   }
 }
