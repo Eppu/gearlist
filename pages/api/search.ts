@@ -16,7 +16,7 @@ export default async function handler(
 
   // Get all items with the request body user id from the db
   if (req.method === 'POST') {
-    const searchTerm = req.body.query;
+    const searchTerm: string = req.body.query;
     // Find item templates that match the search term
     await prisma.itemTemplate
       .findMany({
