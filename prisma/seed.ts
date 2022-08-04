@@ -24,6 +24,11 @@ async function main() {
       model: 'M-P-100',
       category: Category.CAMERA,
     },
+    {
+      brand: 'Leica',
+      model: 'Summicron 50mm',
+      category: Category.LENS,
+    },
   ];
 
   // Data for item seed
@@ -55,6 +60,24 @@ async function main() {
       authorId: 2,
       templateId: 1,
     },
+    {
+      title: 'Item 4',
+      serialNumber: '56789',
+      price: 1500.0,
+      published: true,
+      image: 'https://picsum.photos/200',
+      authorId: 1,
+      templateId: 2,
+    },
+  ];
+
+  // Data for collection seed
+  const collections = [
+    {
+      title: 'My awesome stuff',
+      description: 'This is a list of my awesome stuff',
+      authorId: 1,
+    },
   ];
 
   // Create users
@@ -73,6 +96,12 @@ async function main() {
   console.log('Creating items...');
   await prisma.item.createMany({
     data: items,
+  });
+
+  // Create collections
+  console.log('Creating collections...');
+  await prisma.collection.createMany({
+    data: collections,
   });
 
   console.log('Data seed finished.');
