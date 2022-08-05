@@ -42,8 +42,9 @@ export default async function handler(
             .status(500)
             .json({ message: 'Items retrieval failed', error: err });
         });
+    } else if (!searchTerm) {
+      res.status(400).json({ message: 'No search term provided' });
     }
-    res.status(400).json({ message: 'No search term provided' });
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }
