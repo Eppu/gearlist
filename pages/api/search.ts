@@ -3,10 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import checkSession from '../../lib/checkSession';
 import { prisma } from '../../lib/prisma';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<any>
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const session = await checkSession(req, res);
   // There's probably a smarter way to do this but I can't come up with one right now.
   if (!session) {
@@ -16,34 +13,33 @@ export default async function handler(
 
   // Get all items with the request body user id from the db
   if (req.method === 'POST') {
-    const searchTerm = req.body.query;
+    const { query, limit } = req.body;
     // Find item templates that match the search term
-    if (searchTerm) {
-      await prisma.itemTemplate
-        .findMany({
-          where: {
-            brand: {
-              search: searchTerm as string,
-            },
-            OR: [
-              {
-                model: {
-                  search: searchTerm as string,
-                },
-              },
-            ],
+    // if (query) {
+    await prisma.itemTemplate
+      .findMany({
+        take: limit || 20,
+        where: {
+          brand: {
+            search: query,
           },
-        })
-        .then((items) => {
-          res.status(200).json({ count: items.length, items });
-        })
-        .catch((err) => {
-          res
-            .status(500)
-            .json({ message: 'Items retrieval failed', error: err });
-        });
-    }
-    res.status(400).json({ message: 'No search term provided' });
+          OR: [
+            {
+              model: {
+                search: query as string,
+              },
+            },
+          ],
+        },
+      })
+      .then((items) => {
+        res.status(200).json({ count: items.length, items });
+      })
+      .catch((err) => {
+        res.status(500).json({ message: 'Items retrieval failed', error: err });
+      });
+    // }
+    // res.status(400).json({ message: 'No search term provided' });
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }
