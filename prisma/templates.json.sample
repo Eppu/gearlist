@@ -1,0 +1,12 @@
+[
+  {
+    "brand": "Leica",
+    "model": "M-P-100",
+    "category": "CAMERA"
+  },
+  {
+    "brand": "Leica",
+    "model": "Summicron 50mm",
+    "category": "LENS"
+  }
+]

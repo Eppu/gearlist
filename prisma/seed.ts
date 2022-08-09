@@ -1,4 +1,5 @@
-import { Category, PrismaClient } from '@prisma/client';
+import { Category, ItemTemplate, PrismaClient } from '@prisma/client';
+import templateJson from './templates.json';
 
 // This only ever runs once, so create a new client for each run
 const prisma = new PrismaClient();
@@ -14,20 +15,6 @@ async function main() {
     {
       name: 'Jane Doe',
       email: 'test1@example.com',
-    },
-  ];
-
-  // Data for template seed
-  const templates = [
-    {
-      brand: 'Leica',
-      model: 'M-P-100',
-      category: Category.CAMERA,
-    },
-    {
-      brand: 'Leica',
-      model: 'Summicron 50mm',
-      category: Category.LENS,
     },
   ];
 
@@ -86,10 +73,9 @@ async function main() {
     data: users,
   });
 
-  // Create templates
   console.log('Creating templates...');
   await prisma.itemTemplate.createMany({
-    data: templates,
+    data: templateJson as ItemTemplate[],
   });
 
   // Create items
