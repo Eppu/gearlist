@@ -36,3 +36,6 @@ yarn-error.log*
 
 # env file
 .env
+
+# seed jsons
+/prisma/*.json
