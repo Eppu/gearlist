@@ -59,12 +59,8 @@ function Home({ items }: { items: Item[] }) {
           // if session exists, show button to get items by user id
           session && (
             <>
-              <button onClick={() => getItemsByUser()}>
-                get items by user id
-              </button>
-              <button onClick={() => searchItemTemplates()}>
-                search item templates
-              </button>
+              <button onClick={() => getItemsByUser()}>get items by user id</button>
+              <button onClick={() => searchItemTemplates()}>search item templates</button>
             </>
           )
         }
