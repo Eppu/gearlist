@@ -46,6 +46,7 @@ model User {
   email String  @unique
   name  String?
   items Item[]
+  collections Collection[]
   createdAt DateTime @default(now())
 
   emailVerified DateTime?
@@ -77,6 +78,19 @@ model Item {
   authorId  Int?
   template  ItemTemplate? @relation(fields: [templateId], references: [id])
   templateId Int?
+  collections Collection[]
+}
+
+// Create a model called collection. A collection can have multiple items owned by a single user.
+model Collection {
+  id        String     @id @default(uuid())
+  title     String
+  description String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User   @relation(fields: [authorId], references: [id])
+  authorId  Int
+  items Item[]
 }
 
 enum Category {
