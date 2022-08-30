@@ -1,7 +1,7 @@
-// import '../styles/globals.css';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { NextUIProvider } from '@nextui-org/react';
+import { Navigation } from '../components/Navigation';
 
 // Use the <SessionProvider> to improve performance and allow components that call
 // `useSession()` anywhere in your application to access the `session` object.
@@ -13,6 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
       session={pageProps.session}
     >
       <NextUIProvider>
+        <Navigation />
         <Component {...pageProps} />
       </NextUIProvider>
     </SessionProvider>

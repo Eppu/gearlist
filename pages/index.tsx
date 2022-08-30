@@ -8,7 +8,6 @@ import { Item } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { Container, Text, Navbar, Button, Link, Card, Avatar, Dropdown } from '@nextui-org/react';
 import { Layout } from '../components/Layout';
-import { Navigation } from '../components/Navigation';
 
 async function testCreateUser(name: string, email: string) {
   const response = await fetch('/api/createUser', {
@@ -53,8 +52,6 @@ function Home({ items }: { items: Item[] }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* <main className={styles.main}> */}
-      <Navigation />
       <Container
         as="main"
         display="flex"

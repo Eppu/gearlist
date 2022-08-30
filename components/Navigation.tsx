@@ -1,15 +1,10 @@
-import {
-  Text,
-  Navbar,
-  Button,
-  Link,
-  Avatar,
-  Dropdown,
-  Loading,
-} from '@nextui-org/react';
+import { Text, Navbar, Button, Link, Avatar, Dropdown, Loading } from '@nextui-org/react';
+import NextLink from 'next/link';
+
 import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Key } from 'react';
+import { UserSquare, FilmStrip, Gear } from 'phosphor-react';
 
 function handleDropdownAction(action: Key) {
   if (action === 'signOut') {
@@ -21,6 +16,7 @@ function handleDropdownAction(action: Key) {
 
 export const Navigation = ({}) => {
   const { data: session, status } = useSession();
+
   const isLoading = status === 'loading';
 
   const router = useRouter();
@@ -30,14 +26,15 @@ export const Navigation = ({}) => {
     return pathname === route;
   };
 
-  const collapseItems = [
-    'Features',
-    'Customers',
-    'Pricing',
-    'Company',
-    'My Collections',
-    'Settings',
-    'Log Out',
+  // Placeholder values
+  const collapseItems = ['Features', 'Customers', 'Pricing', 'Company', 'My Collections', 'Settings', 'Log Out'];
+
+  // Placeholder values
+  const navLinks = [
+    { title: 'Features', path: '/features' },
+    { title: 'Customers', path: '#' },
+    { title: 'Pricing', path: '#' },
+    { title: 'Company', path: '#' },
   ];
 
   return (
@@ -45,42 +42,24 @@ export const Navigation = ({}) => {
       <Navbar.Toggle aria-label="toggle navigation" showIn={'xs'} />
       <Navbar.Brand>
         <Text b color="inherit" hideIn="xs">
-          Gearlist
+          <NextLink href="/">Gearlist</NextLink>
         </Text>
       </Navbar.Brand>
       <Navbar.Content enableCursorHighlight hideIn="xs">
-        <Navbar.Link isActive={isActiveRoute('/features')} href="#">
-          Features
-        </Navbar.Link>
-        <Navbar.Link isActive={isActiveRoute('/customers')} href="#">
-          Customers
-        </Navbar.Link>
-        <Navbar.Link isActive={isActiveRoute('/pricing')} href="#">
-          Pricing
-        </Navbar.Link>
-        <Navbar.Link isActive={isActiveRoute('/company')} href="#">
-          Company
-        </Navbar.Link>
+        {navLinks.map((link) => (
+          <NextLink href={link.path} key={link.title}>
+            <Navbar.Link key={link.title} isActive={isActiveRoute(link.path)}>
+              {link.title}
+            </Navbar.Link>
+          </NextLink>
+        ))}
       </Navbar.Content>
 
       {!session && (
         <Navbar.Content>
-          {/* <Navbar.Link color="inherit" href="#">
-          Login
-        </Navbar.Link> */}
           <Navbar.Item>
-            <Button
-              auto
-              flat
-              disabled={isLoading}
-              as={Link}
-              onClick={() => signIn()}
-            >
-              {isLoading ? (
-                <Loading color="currentColor" size="sm" />
-              ) : (
-                'Sign In'
-              )}
+            <Button auto flat disabled={isLoading} as={Link} onClick={() => signIn()}>
+              {isLoading ? <Loading color="currentColor" size="sm" /> : 'Sign In'}
             </Button>
           </Navbar.Item>
         </Navbar.Content>
@@ -103,10 +82,7 @@ export const Navigation = ({}) => {
                     as="button"
                     color="secondary"
                     size="md"
-                    src={
-                      session.user?.image ||
-                      'https://i.pravatar.cc/150?u=a042581f4e29026704d'
-                    }
+                    src={session.user?.image || 'https://i.pravatar.cc/150?u=a042581f4e29026704d'}
                   />
                 </Dropdown.Trigger>
               </Navbar.Item>
@@ -115,20 +91,20 @@ export const Navigation = ({}) => {
                 color="secondary"
                 onAction={(actionKey) => handleDropdownAction(actionKey)}
               >
-                <Dropdown.Item key="profile" css={{ height: '$18' }}>
-                  {/* <Text b color="inherit" css={{ d: 'flex' }}>
-                    Profile
-                  </Text> */}
+                <Dropdown.Item
+                  icon={<UserSquare weight="light" size={24} />}
+                  key="profile"
+                  // css={{ height: '$18' }}
+                >
                   <Text b color="inherit" css={{ d: 'flex' }}>
-                    {/* {session.user?.email || '...'} */}@
-                    {session.user.name || '...'}
+                    @{session.user.name || '...'}
                   </Text>
                 </Dropdown.Item>
-                <Dropdown.Item key="collections" withDivider>
+                <Dropdown.Item key="collections" withDivider icon={<FilmStrip size={24} weight="light" />}>
                   My Collections
                 </Dropdown.Item>
                 {/* <Dropdown.Item key="team_settings">Team Settings</Dropdown.Item> */}
-                <Dropdown.Item key="settings" withDivider>
+                <Dropdown.Item key="settings" withDivider icon={<Gear size={24} weight="light" />}>
                   Settings
                 </Dropdown.Item>
                 {/* <Dropdown.Item key="system">System</Dropdown.Item>
