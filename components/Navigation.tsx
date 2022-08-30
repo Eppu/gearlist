@@ -1,10 +1,11 @@
-import { Text, Navbar, Button, Link, Avatar, Dropdown, Loading } from '@nextui-org/react';
+import { Text, Navbar, Button, Link, Avatar, Dropdown, Loading, NavbarToggleProps } from '@nextui-org/react';
 import NextLink from 'next/link';
 
 import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from 'next-auth/react';
-import { Key } from 'react';
+import { Key, useState } from 'react';
 import { UserSquare, FilmStrip, Gear } from 'phosphor-react';
+import { ComponentWithAs } from '@nextui-org/react/types/utils/system';
 
 function handleDropdownAction(action: Key) {
   if (action === 'signOut') {
@@ -16,7 +17,6 @@ function handleDropdownAction(action: Key) {
 
 export const Navigation = ({}) => {
   const { data: session, status } = useSession();
-
   const isLoading = status === 'loading';
 
   const router = useRouter();
@@ -27,7 +27,13 @@ export const Navigation = ({}) => {
   };
 
   // Placeholder values
-  const collapseItems = ['Features', 'Customers', 'Pricing', 'Company', 'My Collections', 'Settings', 'Log Out'];
+  const collapseItems = [
+    { title: 'Home', path: '/' },
+    { title: 'Features', path: '/features' },
+    { title: 'Customers', path: '#' },
+    { title: 'Pricing', path: '#' },
+    { title: 'Company', path: '#' },
+  ];
 
   // Placeholder values
   const navLinks = [
@@ -46,9 +52,9 @@ export const Navigation = ({}) => {
         </Text>
       </Navbar.Brand>
       <Navbar.Content enableCursorHighlight hideIn="xs">
-        {navLinks.map((link) => (
-          <NextLink href={link.path} key={link.title}>
-            <Navbar.Link key={link.title} isActive={isActiveRoute(link.path)}>
+        {navLinks.map((link, index) => (
+          <NextLink href={link.path} key={index}>
+            <Navbar.Link key={index} isActive={isActiveRoute(link.path)}>
               {link.title}
             </Navbar.Link>
           </NextLink>
@@ -118,30 +124,32 @@ export const Navigation = ({}) => {
               </Dropdown.Menu>
             </Dropdown>
           </Navbar.Content>
-          <Navbar.Collapse>
-            {collapseItems.map((item, index) => (
-              <Navbar.CollapseItem
-                key={item}
-                activeColor="secondary"
-                css={{
-                  color: index === collapseItems.length - 1 ? '$error' : '',
-                }}
-                isActive={index === 2}
-              >
-                <Link
-                  color="inherit"
-                  css={{
-                    minWidth: '100%',
-                  }}
-                  href="#"
-                >
-                  {item}
-                </Link>
-              </Navbar.CollapseItem>
-            ))}
-          </Navbar.Collapse>
         </>
       )}
+      <Navbar.Collapse>
+        {collapseItems.map((item, index) => (
+          <Navbar.CollapseItem
+            key={index}
+            activeColor="secondary"
+            css={{
+              color: index === collapseItems.length - 1 ? '$error' : '',
+            }}
+            isActive={isActiveRoute(item.path)}
+          >
+            <NextLink href={item.path}>
+              <Link
+                color="inherit"
+                css={{
+                  minWidth: '100%',
+                }}
+                // href={item.path}
+              >
+                {item.title}
+              </Link>
+            </NextLink>
+          </Navbar.CollapseItem>
+        ))}
+      </Navbar.Collapse>
     </Navbar>
   );
 };
