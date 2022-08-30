@@ -1,4 +1,13 @@
-import { Text, Navbar, Button, Link, Card, Avatar, Dropdown, Loading } from '@nextui-org/react';
+import {
+  Text,
+  Navbar,
+  Button,
+  Link,
+  Avatar,
+  Dropdown,
+  Loading,
+} from '@nextui-org/react';
+import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Key } from 'react';
 
@@ -14,7 +23,22 @@ export const Navigation = ({}) => {
   const { data: session, status } = useSession();
   const isLoading = status === 'loading';
 
-  const collapseItems = ['Features', 'Customers', 'Pricing', 'Company', 'My Collections', 'Settings', 'Log Out'];
+  const router = useRouter();
+  const { pathname } = router;
+
+  const isActiveRoute = (route: string) => {
+    return pathname === route;
+  };
+
+  const collapseItems = [
+    'Features',
+    'Customers',
+    'Pricing',
+    'Company',
+    'My Collections',
+    'Settings',
+    'Log Out',
+  ];
 
   return (
     <Navbar variant="floating">
@@ -25,12 +49,18 @@ export const Navigation = ({}) => {
         </Text>
       </Navbar.Brand>
       <Navbar.Content enableCursorHighlight hideIn="xs">
-        <Navbar.Link href="#">Features</Navbar.Link>
-        <Navbar.Link isActive href="#">
+        <Navbar.Link isActive={isActiveRoute('/features')} href="#">
+          Features
+        </Navbar.Link>
+        <Navbar.Link isActive={isActiveRoute('/customers')} href="#">
           Customers
         </Navbar.Link>
-        <Navbar.Link href="#">Pricing</Navbar.Link>
-        <Navbar.Link href="#">Company</Navbar.Link>
+        <Navbar.Link isActive={isActiveRoute('/pricing')} href="#">
+          Pricing
+        </Navbar.Link>
+        <Navbar.Link isActive={isActiveRoute('/company')} href="#">
+          Company
+        </Navbar.Link>
       </Navbar.Content>
 
       {!session && (
@@ -39,8 +69,18 @@ export const Navigation = ({}) => {
           Login
         </Navbar.Link> */}
           <Navbar.Item>
-            <Button auto flat disabled={isLoading} as={Link} onClick={() => signIn()}>
-              {isLoading ? <Loading color="currentColor" size="sm" /> : 'Sign In'}
+            <Button
+              auto
+              flat
+              disabled={isLoading}
+              as={Link}
+              onClick={() => signIn()}
+            >
+              {isLoading ? (
+                <Loading color="currentColor" size="sm" />
+              ) : (
+                'Sign In'
+              )}
             </Button>
           </Navbar.Item>
         </Navbar.Content>
@@ -63,7 +103,10 @@ export const Navigation = ({}) => {
                     as="button"
                     color="secondary"
                     size="md"
-                    src={session.user?.image || 'https://i.pravatar.cc/150?u=a042581f4e29026704d'}
+                    src={
+                      session.user?.image ||
+                      'https://i.pravatar.cc/150?u=a042581f4e29026704d'
+                    }
                   />
                 </Dropdown.Trigger>
               </Navbar.Item>
@@ -77,7 +120,8 @@ export const Navigation = ({}) => {
                     Profile
                   </Text> */}
                   <Text b color="inherit" css={{ d: 'flex' }}>
-                    {/* {session.user?.email || '...'} */}@{session.user.name || '...'}
+                    {/* {session.user?.email || '...'} */}@
+                    {session.user.name || '...'}
                   </Text>
                 </Dropdown.Item>
                 <Dropdown.Item key="collections" withDivider>
