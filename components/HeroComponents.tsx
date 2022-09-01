@@ -36,16 +36,14 @@ export const levitating = keyframes({
 
 const StyledContainer = styled('div', {
   dflex: 'center',
-  //   position: 'absolute',
   zIndex: '$max',
   '@xsMax': {
     display: 'none',
   },
-  //   width: '100%',
 });
 
 export const Card1 = () => (
-  <Card isHoverable>
+  <Card css={{ animation: `${levitating} 15s ease infinite` }}>
     <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
       <Col>
         <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
@@ -87,29 +85,29 @@ export const Card2 = () => (
     />
   </Card>
 );
-export const Card3 = () => (
-  <Card css={{ bg: '$black', w: '100%' }}>
-    <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
-      <Col>
-        <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
-          Supercharged
-        </Text>
-        <Text h4 color="white">
-          Creates beauty like a beast
-        </Text>
-      </Col>
-    </Card.Header>
-    <Card.Image
-      src="https://nextui.org/images/card-example-2.jpeg"
-      width="100%"
-      height={340}
-      objectFit="cover"
-      alt="Card image background"
-    />
-  </Card>
-);
+// export const Card3 = () => (
+//   <Card css={{ bg: '$black', w: '100%', animation: `${levitating} 8s ease infinite` }}>
+//     <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
+//       <Col>
+//         <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
+//           Supercharged
+//         </Text>
+//         <Text h4 color="white">
+//           Creates beauty like a beast
+//         </Text>
+//       </Col>
+//     </Card.Header>
+//     <Card.Image
+//       src="https://nextui.org/images/card-example-2.jpeg"
+//       width="100%"
+//       height={340}
+//       objectFit="cover"
+//       alt="Card image background"
+//     />
+//   </Card>
+// );
 export const Card4 = () => (
-  <Card css={{ w: '100%', h: '400px' }}>
+  <Card css={{ w: '100%', h: '400px', animation: `${levitating} 11s ease infinite` }}>
     <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
       <Col>
         <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
@@ -162,7 +160,7 @@ export const Card4 = () => (
   </Card>
 );
 export const Card5 = () => (
-  <Card css={{ w: '100%', h: '400px' }}>
+  <Card css={{ w: '100%', h: '400px', animation: `${levitating} 17s ease infinite` }}>
     <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
       <Col>
         <Text size={12} weight="bold" transform="uppercase" color="#9E9E9E">
@@ -229,18 +227,6 @@ export const Card5 = () => (
 );
 
 const HeroComponents = () => {
-  //   const isMobile = useIsMobile();
-
-  //   useEffect(() => {
-  //     if (isMobile) {
-  //       const element = document.getElementById("nextui-tooltip");
-
-  //       if (element) {
-  //         element.remove();
-  //       }
-  //     }
-  //   }, [isMobile]);
-
   return (
     <Container>
       <Grid.Container gap={2} justify="center">
@@ -250,9 +236,6 @@ const HeroComponents = () => {
         <Grid xs={12} sm={5}>
           <Card2 />
         </Grid>
-        {/* <Grid xs={12} sm={2}>
-          <Card3 />
-        </Grid> */}
         <Grid xs={12} sm={4}>
           <Card4 />
         </Grid>
