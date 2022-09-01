@@ -117,9 +117,13 @@ function Home({ items }: { items: Item[] }) {
           align="center"
           className="hero__content"
           css={{
-            zIndex: '$2',
+            zIndex: '$1',
             '@mdMax': {
               mt: '80px',
+              p: '0 8px',
+            },
+            '@mdMin': {
+              mt: '120px',
               p: '0 8px',
             },
             '@xsMax': {
