@@ -14,25 +14,10 @@ import {
   StyledButton,
   keyframes,
   Container,
+  Image,
 } from '@nextui-org/react';
 
-export const levitating = keyframes({
-  '0%': {
-    transform: 'translateY(0)',
-  },
-  '30%': {
-    transform: 'translateY(-10px)',
-  },
-  '50%': {
-    transform: 'translateY(4px)',
-  },
-  '70%': {
-    transform: 'translateY(-15px)',
-  },
-  '100%': {
-    transform: 'translateY(0)',
-  },
-});
+import { levitating, appears } from '../utils/animations';
 
 const StyledContainer = styled('div', {
   dflex: 'center',
@@ -242,6 +227,21 @@ const HeroComponents = () => {
         <Grid xs={12} sm={8}>
           <Card5 />
         </Grid>
+        <Image
+          alt="gradient blue background"
+          className="docs__gradient-blue"
+          css={{
+            display: 'block',
+            opacity: 1,
+            position: 'fixed',
+            zIndex: '-1',
+            bottom: '-10%',
+            left: '17%',
+            right: '-10%',
+            animation: `${appears} 1000ms 500ms ease forwards`,
+          }}
+          src="/images/bgblur.svg"
+        />
       </Grid.Container>
     </Container>
   );
