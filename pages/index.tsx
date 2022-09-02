@@ -54,35 +54,41 @@ async function getItemsByUser() {
   console.log(data);
 }
 
-// export const StyledTitle = styled('h1', {
-//   display: 'inline',
-//   fontWeight: '$bold',
-//   color: '$text',
-//   lh: '1.2',
-//   fs: '2.5rem',
-//   '@sm': {
-//     fs: '3rem',
-//   },
-//   '@lg': {
-//     fs: '3.5rem',
-//   },
-// });
+export const StyledTitle = styled('h1', {
+  display: 'inline',
+  fontFamily: 'Manrope',
+  fontWeight: 'bold',
+  color: '$text',
+  lh: '1.2',
+  fs: '2.5rem',
+  '@sm': {
+    fs: '3rem',
+  },
+  '@lg': {
+    fs: '3.5rem',
+  },
+});
 
-// export const StyledGradientTitle = styled(StyledTitle, {
-//   textGradient: '180deg, #FF1CF7 25%, #b249f8 100%',
-//   '&::selection': {
-//     WebkitTextFillColor: '$colors$text',
-//   },
-// });
+export const StyledGradientTitle = styled(StyledTitle, {
+  display: 'inline-block',
+  marginTop: '2rem',
+  textGradient: '180deg, #FF1CF7 25%, #b249f8 100%',
+  '&::selection': {
+    WebkitTextFillColor: '$colors$text',
+  },
+  // This is to line text up properly on high-res wide displays
+  paddingRight: '0.5rem',
+});
 
-// export const StyledSubtitle = styled('p', {
-//   pl: '$1',
-//   fs: '$xl',
-//   width: '100%',
-//   display: 'inline-flex',
-//   fontWeight: '$medium',
-//   color: '$accents7',
-// });
+export const StyledSubtitle = styled('p', {
+  pl: '$1',
+  fs: '$xl',
+  fontFamily: 'Manrope',
+  width: '100%',
+  display: 'inline-flex',
+  fontWeight: '$medium',
+  color: '$accents7',
+});
 
 function Home({ items }: { items: Item[] }) {
   const { data: session, status } = useSession();
@@ -146,19 +152,21 @@ function Home({ items }: { items: Item[] }) {
               },
             }}
           >
-            <Text h1 size={60} css={{ mb: 0 }}>
+            <StyledTitle
+            //  h1 size={60} css={{ mb: 0 }}
+            >
               Gearheads rejoice.
-            </Text>
-            <Text
-              h1
-              size={60}
-              css={{
-                textGradient: '45deg, $purple600 -20%, $pink600 100%',
-              }}
-              weight="bold"
+            </StyledTitle>
+            <StyledGradientTitle
+            // h1
+            // size={60}
+            // css={{
+            //   textGradient: '45deg, $purple600 -20%, $pink600 100%',
+            // }}
+            // weight="bold"
             >
               Keep track of your gear and share your collection.
-            </Text>
+            </StyledGradientTitle>
             <Spacer y={2} />
             <Text
               h2
@@ -169,6 +177,8 @@ function Home({ items }: { items: Item[] }) {
                 '@mdMax': {
                   mt: '$3',
                 },
+
+                fontFamily: 'Manrope',
               }}
             >
               Get access to the best camera database on the web today.

@@ -16,11 +16,18 @@ function handleDropdownAction(action: Key) {
 
 export const Navigation = ({}) => {
   const { data: session, status } = useSession();
-  const isLoading = status === 'loading';
-
   const router = useRouter();
+  const isLoading = status === 'loading';
   const { pathname } = router;
 
+  const [isNavbarOpen, setIsNavbarOpen] = useState(false);
+
+  // Workaround for closing navbar on mobile when clicking on a link
+  if (router.events) {
+    router.events.on('routeChangeComplete', () => {
+      setIsNavbarOpen(false);
+    });
+  }
   const isActiveRoute = (route: string) => {
     return pathname === route;
   };
@@ -44,7 +51,12 @@ export const Navigation = ({}) => {
 
   return (
     <Navbar variant="floating">
-      <Navbar.Toggle aria-label="toggle navigation" showIn={'xs'} />
+      <Navbar.Toggle
+        isSelected={isNavbarOpen}
+        onChange={(e) => setIsNavbarOpen(e as boolean)}
+        aria-label="toggle navigation"
+        showIn={'xs'}
+      />
       <Navbar.Brand>
         <Text b color="inherit" hideIn="xs">
           <NextLink href="/">Gearlist</NextLink>
@@ -112,11 +124,7 @@ export const Navigation = ({}) => {
                 <Dropdown.Item key="settings" withDivider icon={<Gear size={24} weight="light" />}>
                   Settings
                 </Dropdown.Item>
-                {/* <Dropdown.Item key="system">System</Dropdown.Item>
-                <Dropdown.Item key="configurations">Configurations</Dropdown.Item>
-                <Dropdown.Item key="help_and_feedback" withDivider>
-                  Help & Feedback
-                </Dropdown.Item> */}
+
                 <Dropdown.Item key="signOut" withDivider color="error">
                   Log Out
                 </Dropdown.Item>
@@ -125,7 +133,7 @@ export const Navigation = ({}) => {
           </Navbar.Content>
         </>
       )}
-      <Navbar.Collapse>
+      <Navbar.Collapse isOpen={isNavbarOpen}>
         {collapseItems.map((item, index) => (
           <Navbar.CollapseItem
             key={index}
@@ -141,7 +149,6 @@ export const Navigation = ({}) => {
                 css={{
                   minWidth: '100%',
                 }}
-                // href={item.path}
               >
                 {item.title}
               </Link>
