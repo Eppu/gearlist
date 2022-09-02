@@ -127,7 +127,7 @@ export const Card4 = () => (
         alt="Card example background"
       />
     </Card.Body>
-    <Card.Footer
+    {/* <Card.Footer
       isBlurred
       css={{
         position: 'absolute',
@@ -156,7 +156,7 @@ export const Card4 = () => (
           </Row>
         </Col>
       </Row>
-    </Card.Footer>
+    </Card.Footer> */}
   </Card>
 );
 export const Card5 = () => (
@@ -180,7 +180,7 @@ export const Card5 = () => (
         alt="Relaxing app background"
       />
     </Card.Body>
-    <Card.Footer
+    {/* <Card.Footer
       isBlurred
       css={{
         position: 'absolute',
@@ -222,7 +222,7 @@ export const Card5 = () => (
           </Row>
         </Col>
       </Row>
-    </Card.Footer>
+    </Card.Footer> */}
   </Card>
 );
 

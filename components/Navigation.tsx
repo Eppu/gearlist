@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Key, useState } from 'react';
 import { UserSquare, FilmStrip, Gear } from 'phosphor-react';
-import { ComponentWithAs } from '@nextui-org/react/types/utils/system';
 
 function handleDropdownAction(action: Key) {
   if (action === 'signOut') {
