@@ -1,10 +1,20 @@
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { NextUIProvider, createTheme } from '@nextui-org/react';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { Navigation } from '../components/Navigation';
 
-const theme = createTheme({
+const lightTheme = createTheme({
   type: 'light',
+  theme: {
+    fonts: {
+      sans: 'Manrope, sans-serif',
+    },
+  },
+});
+
+const darkTheme = createTheme({
+  type: 'dark',
   theme: {
     fonts: {
       sans: 'Manrope, sans-serif',
@@ -21,12 +31,21 @@ export default function App({ Component, pageProps }: AppProps) {
       // you have a short session maxAge time. Shown here with default values.
       session={pageProps.session}
     >
-      <NextUIProvider
-      // theme={theme}
+      <NextThemesProvider
+        defaultTheme="system"
+        attribute="class"
+        value={{
+          light: lightTheme.className,
+          dark: darkTheme.className,
+        }}
       >
-        <Navigation />
-        <Component {...pageProps} />
-      </NextUIProvider>
+        <NextUIProvider
+        // theme={theme}
+        >
+          <Navigation />
+          <Component {...pageProps} />
+        </NextUIProvider>
+      </NextThemesProvider>
     </SessionProvider>
   );
 }
