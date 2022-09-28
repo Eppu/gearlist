@@ -44,11 +44,11 @@ model Session {
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
+  username String @unique
   name  String?
   items Item[]
   collections Collection[]
   createdAt DateTime @default(now())
-
   emailVerified DateTime?
   image         String?
   accounts      Account[]

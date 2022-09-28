@@ -11,10 +11,12 @@ async function main() {
     {
       name: 'John Doe',
       email: 'test@example.com',
+      username: 'JohnDoe',
     },
     {
       name: 'Jane Doe',
       email: 'test1@example.com',
+      username: 'JaneDoe',
     },
   ];
 

@@ -4,22 +4,19 @@ import { PrismaClient } from '@prisma/client';
 import { prisma } from '../../lib/prisma';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
-  if (req.method === 'POST') {
-    // Create a user in the DB and return the user
-    const { name, email, username } = req.body;
-    await prisma.user
-      .create({
-        data: {
-          name,
-          email,
-          username,
+  // Get a user from the DB by username and return the user
+  if (req.method === 'GET') {
+    const user = await prisma.user
+      .findUnique({
+        where: {
+          username: req.query.username as string,
         },
       })
       .then((user) => {
         res.status(200).json(user);
       })
       .catch((err) => {
-        res.status(500).json({ message: 'User creation failed', error: err });
+        res.status(500).json({ message: 'User retrieval failed', error: err });
       });
   } else {
     res.status(405).json({ error: 'Method not allowed' });
