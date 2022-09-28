@@ -44,7 +44,7 @@ model Session {
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
-  username String @unique
+  username String? @unique
   name  String?
   items Item[]
   collections Collection[]

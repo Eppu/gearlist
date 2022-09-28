@@ -6,13 +6,12 @@ import { prisma } from '../../lib/prisma';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   if (req.method === 'POST') {
     // Create a user in the DB and return the user
-    const { name, email, username } = req.body;
+    const { name, email } = req.body;
     await prisma.user
       .create({
         data: {
           name,
           email,
-          username,
         },
       })
       .then((user) => {
