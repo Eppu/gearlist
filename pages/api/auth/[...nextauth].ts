@@ -25,6 +25,9 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+  pages: {
+    newUser: '/onboarding',
+  },
   debug: true,
 };
 
