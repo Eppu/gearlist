@@ -6,13 +6,13 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { Key, useState } from 'react';
 import { UserSquare, FilmStrip, Gear } from 'phosphor-react';
 
-function handleDropdownAction(action: Key) {
-  if (action === 'signOut') {
-    signOut();
-    return;
-  }
-  console.log(action);
-}
+// function handleDropdownAction(action: Key) {
+//   if (action === 'signOut') {
+//     signOut();
+//     return;
+//   }
+//   console.log(action);
+// }
 
 export const Navigation = ({}) => {
   const { data: session, status } = useSession();
@@ -106,7 +106,19 @@ export const Navigation = ({}) => {
               <Dropdown.Menu
                 aria-label="User menu actions"
                 color="secondary"
-                onAction={(actionKey) => handleDropdownAction(actionKey)}
+                // Declaring onAction actions here for now until I can figure out how to pass the session to the handler properly
+                onAction={(actionKey) => {
+                  console.log(actionKey);
+                  if (actionKey === 'signOut') {
+                    signOut();
+                  }
+                  if (actionKey === 'profile') {
+                    router.push(`/${session.user.username}`);
+                  }
+                  if (actionKey === 'settings') {
+                    router.push(`/settings`);
+                  }
+                }}
               >
                 <Dropdown.Item
                   icon={<UserSquare weight="light" size={24} />}
@@ -114,7 +126,7 @@ export const Navigation = ({}) => {
                   // css={{ height: '$18' }}
                 >
                   <Text b color="inherit" css={{ d: 'flex' }}>
-                    @{session.user.name || '...'}
+                    @{session.user.username || '...'}
                   </Text>
                 </Dropdown.Item>
                 <Dropdown.Item key="collections" withDivider icon={<FilmStrip size={24} weight="light" />}>
