@@ -1,7 +1,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Layout } from '../components/Layout';
-import { Container, Text, Spacer, Grid, Input, Button, Row, Col } from '@nextui-org/react';
+import { Container, Text, Spacer, Grid, Input, Button, Row, Loading } from '@nextui-org/react';
 import debounce from 'lodash.debounce';
 import { useState } from 'react';
 
@@ -11,10 +11,11 @@ export default function Onboarding() {
 
   const [isAvailable, setIsAvailable] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  //   const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const checkUsernameAvailability = async (username: string) => {
-    // setUsername(username);
+    setUsername(username);
     if (username.length === 0) {
       setIsAvailable(false);
       setErrorMessage('');
@@ -35,8 +36,27 @@ export default function Onboarding() {
 
   const debouncedCheckUsernameAvailability = debounce(checkUsernameAvailability, 500);
 
+  const updateUser = async (username: string) => {
+    setIsSubmitting(true);
+    const res = await fetch('/api/updateUser', {
+      // include id and username in body
+      body: JSON.stringify({ username, id: session?.user.id }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+    });
+    const { user } = await res.json();
+    setIsSubmitting(false);
+    router.reload();
+  };
+
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return (
+      <Layout>
+        <Loading />
+      </Layout>
+    );
   }
 
   if (!session) {
@@ -45,7 +65,7 @@ export default function Onboarding() {
   }
 
   if (session.user.username) {
-    router.push('/');
+    router.push(`/${session.user.username}`);
     return null;
   }
 
@@ -66,6 +86,7 @@ export default function Onboarding() {
       <Container display="flex" justify="center" alignContent="center" sm>
         <Row justify="center" css={{ marginTop: '$20' }}>
           <Input
+            readOnly={isSubmitting}
             clearable
             color="success"
             labelLeft="@"
@@ -91,7 +112,9 @@ export default function Onboarding() {
         </Row>
         <Text css={{ marginTop: '$10' }}>This is what you will be known as in Gearlist.</Text>
         <Row justify="center" css={{ marginTop: '$20' }}>
-          <Button disabled={!isAvailable}>Continue</Button>
+          <Button disabled={!isAvailable || isSubmitting} onClick={() => updateUser(username)}>
+            {isSubmitting ? <Loading color="currentColor" /> : 'Continue'}
+          </Button>
         </Row>
       </Container>
     </Layout>
