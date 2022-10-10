@@ -3,7 +3,17 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import NextLink from 'next/link';
-import { Container, Row, Col, Text, Avatar, User, Grid, Spacer, Link } from '@nextui-org/react';
+import {
+  Container,
+  Row,
+  Col,
+  Text,
+  Avatar,
+  User,
+  Grid,
+  Spacer,
+  Link,
+} from '@nextui-org/react';
 import { Gear } from 'phosphor-react';
 
 export interface User {
@@ -47,7 +57,11 @@ export default function UserPage({ user, items }: { user: User; items: any }) {
       <Container sm css={{ padding: '$10 $7' }}>
         <Grid.Container gap={2} alignItems="center">
           <Grid justify="center" alignItems="center">
-            <Avatar src={user.image} alt="Profile picture" css={{ size: '$20' }} />
+            <Avatar
+              src={user.image}
+              alt="Profile picture"
+              css={{ size: '$20' }}
+            />
           </Grid>
           <Grid justify="center">
             <Text h1>@{user.username}</Text>
@@ -70,8 +84,18 @@ export default function UserPage({ user, items }: { user: User; items: any }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { username } = context.query;
-  const res = await fetch(`http://localhost:3000/api/getUser?username=${username}`);
+  const res = await fetch(
+    `http://localhost:3000/api/getUser?username=${username}`
+  );
   const user = await res.json();
+
+  if (user.error) {
+    return {
+      props: {
+        user: null,
+      },
+    };
+  }
 
   //   // If user is found, get the user's items
   //   if (user) {
