@@ -1,4 +1,13 @@
-import { Text, Navbar, Button, Link, Avatar, Dropdown, Loading, NavbarToggleProps } from '@nextui-org/react';
+import {
+  Text,
+  Navbar,
+  Button,
+  Link,
+  Avatar,
+  Dropdown,
+  Loading,
+  NavbarToggleProps,
+} from '@nextui-org/react';
 import NextLink from 'next/link';
 
 import { useRouter } from 'next/router';
@@ -32,6 +41,8 @@ export const Navigation = ({}) => {
     return pathname === route;
   };
 
+  const isValidSession = session && session.user.username;
+
   // Placeholder values
   const collapseItems = [
     { title: 'Home', path: '/' },
@@ -51,32 +62,50 @@ export const Navigation = ({}) => {
 
   return (
     <Navbar variant="floating">
-      <Navbar.Toggle
-        isSelected={isNavbarOpen}
-        onChange={(e) => setIsNavbarOpen(e as boolean)}
-        aria-label="toggle navigation"
-        showIn={'xs'}
-      />
+      {isValidSession && (
+        <Navbar.Toggle
+          isSelected={isNavbarOpen}
+          onChange={(e) => setIsNavbarOpen(e as boolean)}
+          aria-label="toggle navigation"
+          showIn={'xs'}
+        />
+      )}
       <Navbar.Brand>
-        <Text b color="inherit" hideIn="xs">
+        <Text b color="inherit" hideIn={isValidSession ? 'xs' : undefined}>
           <NextLink href="/">Gearlist</NextLink>
         </Text>
       </Navbar.Brand>
-      <Navbar.Content enableCursorHighlight hideIn="xs">
-        {navLinks.map((link, index) => (
-          <NextLink href={link.path} key={index}>
-            <Navbar.Link key={index} isActive={isActiveRoute(link.path)}>
-              {link.title}
-            </Navbar.Link>
-          </NextLink>
-        ))}
-      </Navbar.Content>
+
+      {
+        // Only show nav links if user is logged in and valid
+        isValidSession && (
+          <Navbar.Content enableCursorHighlight hideIn="xs">
+            {navLinks.map((link, index) => (
+              <NextLink href={link.path} key={index}>
+                <Navbar.Link key={index} isActive={isActiveRoute(link.path)}>
+                  {link.title}
+                </Navbar.Link>
+              </NextLink>
+            ))}
+          </Navbar.Content>
+        )
+      }
 
       {!session && (
         <Navbar.Content>
           <Navbar.Item>
-            <Button auto flat disabled={isLoading} as={Link} onClick={() => signIn()}>
-              {isLoading ? <Loading color="currentColor" size="sm" /> : 'Sign In'}
+            <Button
+              auto
+              flat
+              disabled={isLoading}
+              as={Link}
+              onClick={() => signIn()}
+            >
+              {isLoading ? (
+                <Loading color="currentColor" size="sm" />
+              ) : (
+                'Sign In'
+              )}
             </Button>
           </Navbar.Item>
         </Navbar.Content>
@@ -106,6 +135,9 @@ export const Navigation = ({}) => {
               <Dropdown.Menu
                 aria-label="User menu actions"
                 color="secondary"
+                disabledKeys={
+                  isValidSession ? [] : ['profile', 'collections', 'settings']
+                }
                 // Declaring onAction actions here for now until I can figure out how to pass the session to the handler properly
                 onAction={(actionKey) => {
                   console.log(actionKey);
@@ -129,11 +161,19 @@ export const Navigation = ({}) => {
                     @{session.user.username || '...'}
                   </Text>
                 </Dropdown.Item>
-                <Dropdown.Item key="collections" withDivider icon={<FilmStrip size={24} weight="light" />}>
+                <Dropdown.Item
+                  key="collections"
+                  withDivider
+                  icon={<FilmStrip size={24} weight="light" />}
+                >
                   My Collections
                 </Dropdown.Item>
                 {/* <Dropdown.Item key="team_settings">Team Settings</Dropdown.Item> */}
-                <Dropdown.Item key="settings" withDivider icon={<Gear size={24} weight="light" />}>
+                <Dropdown.Item
+                  key="settings"
+                  withDivider
+                  icon={<Gear size={24} weight="light" />}
+                >
                   Settings
                 </Dropdown.Item>
 
