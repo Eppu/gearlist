@@ -89,14 +89,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   );
   const user = await res.json();
 
-  if (user.error) {
-    return {
-      props: {
-        user: null,
-      },
-    };
-  }
-
   //   // If user is found, get the user's items
   //   if (user) {
   //     const res = await fetch(`http://localhost:3000/api/search`, {
