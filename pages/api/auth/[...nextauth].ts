@@ -12,7 +12,6 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     }),
   ],
-  session: {},
 
   callbacks: {
     async session({ session, token, user }) {
