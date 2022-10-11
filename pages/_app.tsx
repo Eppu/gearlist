@@ -30,7 +30,7 @@ const darkTheme = createTheme({
 // `useSession()` anywhere in your application to access the `session` object.
 export default function App({ Component, pageProps }: AppProps<{ session: Session }>) {
   // check if user is logged in and session contains username. if not, redirect to onboarding
-  console.log('pageProps', pageProps);
+  // console.log('pageProps', pageProps);
   if (pageProps.session && !pageProps.session.user.username) {
     window.location.href = '/onboarding';
   }
@@ -73,12 +73,17 @@ export default function App({ Component, pageProps }: AppProps<{ session: Sessio
 function Auth({ children }: React.PropsWithChildren<{}>) {
   const { data: session, status } = useSession();
   const router = useRouter();
+
   const isOnboardedUser = !!session?.user.username;
 
   useEffect(() => {
     if (status === 'loading') return; // Do nothing while loading
 
-    if (session && !isOnboardedUser) router.push('/onboarding'); // If not onboarded, force user to /onboarding
+    if (session && !isOnboardedUser) {
+      // If not onboarded, force user to /onboarding
+      router.push('/onboarding');
+      return; // this may or may not be necessary
+    }
   }, [status, isOnboardedUser, session, router]);
 
   if (!session || isOnboardedUser) {
