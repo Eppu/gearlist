@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import LoginButton from '../components/loginButton';
-import { useSession, getSession } from 'next-auth/react';
+import { useSession, getSession, signIn } from 'next-auth/react';
 import { Item } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import {
@@ -195,22 +195,25 @@ function Home({ items }: { items: Item[] }) {
               gap={0}
             >
               <Grid sm={3} xs={12}>
-                <Button
-                  auto
-                  rounded
-                  className="hero__get-started-button"
-                  css={{
-                    maxHeight: '$space$14',
-                    '@xsMax': {
-                      width: '100%',
-                      marginBottom: '$8',
-                    },
-                  }}
-                  size="lg"
-                  // onClick={}
-                >
-                  Get Started
-                </Button>
+                {/* don't show button if alredy logged in */}
+                {!session && (
+                  <Button
+                    auto
+                    rounded
+                    className="hero__get-started-button"
+                    css={{
+                      maxHeight: '$space$14',
+                      '@xsMax': {
+                        width: '100%',
+                        marginBottom: '$8',
+                      },
+                    }}
+                    size="lg"
+                    onClick={() => signIn()}
+                  >
+                    Get Started
+                  </Button>
+                )}
               </Grid>
               <Grid sm={9} xs={12}></Grid>
             </Grid.Container>
