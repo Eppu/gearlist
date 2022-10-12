@@ -28,7 +28,10 @@ const darkTheme = createTheme({
 
 // Use the <SessionProvider> to improve performance and allow components that call
 // `useSession()` anywhere in your application to access the `session` object.
-export default function App({ Component, pageProps }: AppProps<{ session: Session }>) {
+export default function App({
+  Component,
+  pageProps,
+}: AppProps<{ session: Session }>) {
   // check if user is logged in and session contains username. if not, redirect to onboarding
   // console.log('pageProps', pageProps);
   // if (pageProps.session && !pageProps.session.user.username) {
@@ -57,7 +60,8 @@ export default function App({ Component, pageProps }: AppProps<{ session: Sessio
             // if the current route is /onboarding, don't use Auth
             // wrapper
             Component.name === 'Onboarding' ? (
-              <Component {...pageProps} />
+              (console.log("onboarding page, don't use auth wrapper"),
+              (<Component {...pageProps} />))
             ) : (
               <Auth>
                 <Component {...pageProps} />
@@ -91,14 +95,14 @@ function Auth({ children }: React.PropsWithChildren<{}>) {
       console.log("user isn't onboarded, running router push");
       router.push('/onboarding');
     }
-  }, [status, isOnboardedUser, session]);
+  }, [status, isOnboardedUser, session, router]);
 
-  if (!session || isOnboardedUser) {
+  if (!session || isOnboardedUser || router.route === '/onboarding') {
     console.log('no session found or user is onboarded, returning children');
     return children as React.ReactElement;
   }
 
   // Session is being fetched, or no onboarded user
   console.log('returning null');
-  return null;
+  return <h1>invalid</h1>;
 }
