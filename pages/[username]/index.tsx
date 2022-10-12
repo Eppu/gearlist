@@ -3,6 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import NextLink from 'next/link';
+import { prisma } from '../../lib/prisma';
 import {
   Container,
   Row,
@@ -20,8 +21,8 @@ export interface User {
   id: string;
   username: string;
   name?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   emailVerified?: Date | null;
   image?: string | undefined;
 }
@@ -84,32 +85,25 @@ export default function UserPage({ user, items }: { user: User; items: any }) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { username } = context.query;
-  const res = await fetch(
-    `http://localhost:3000/api/getUser?username=${username}`
-  );
-  const user = await res.json();
+  const user = await prisma.user.findUnique({
+    where: {
+      username: username as string,
+    },
+  });
 
-  //   // If user is found, get the user's items
-  //   if (user) {
-  //     const res = await fetch(`http://localhost:3000/api/search`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ query: user.id }),
-  //     });
-  //     const items = await res.json();
-  //     console.log('items', items);
-  //     return {
-  //       props: {
-  //         user,
-  //         items,
-  //       },
-  //     };
-  //   }
+  if (!user) {
+    return {
+      props: {
+        user: null,
+      },
+    };
+  }
+
+  const { createdAt, email, ...userData } = user;
+
   return {
     props: {
-      user,
+      user: userData,
     },
   };
 };
