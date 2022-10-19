@@ -86,5 +86,5 @@ function Auth({ children }: React.PropsWithChildren<{}>) {
   }
 
   // Session is being fetched, or no onboarded user
-  return <h1>invalid</h1>;
+  return null;
 }
