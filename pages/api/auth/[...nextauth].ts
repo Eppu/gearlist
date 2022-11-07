@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     newUser: '/onboarding',
   },
-  debug: true,
+  // debug: true,
 };
 
 export default NextAuth(authOptions);
