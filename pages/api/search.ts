@@ -11,11 +11,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  // Get all items with the request body user id from the db
   if (req.method === 'POST') {
     const { query, limit } = req.body;
     // Find item templates that match the search term
-    // if (query) {
     await prisma.itemTemplate
       .findMany({
         take: limit || 20,

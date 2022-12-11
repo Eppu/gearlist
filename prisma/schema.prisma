@@ -73,7 +73,7 @@ model Item {
   image     String?
   published Boolean @default(false)
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime? @updatedAt
   author    User?   @relation(fields: [authorId], references: [id])
   authorId  Int?
   template  ItemTemplate? @relation(fields: [templateId], references: [id])
