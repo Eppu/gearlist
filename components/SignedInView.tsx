@@ -2,7 +2,7 @@ import { Container, Grid, Row, Text, Card } from '@nextui-org/react';
 import { useState, useEffect } from 'react';
 
 export const SignedInView = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

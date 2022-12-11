@@ -1,4 +1,14 @@
-import { Text, Navbar, Button, Link, Avatar, Dropdown, Loading, NavbarToggleProps } from '@nextui-org/react';
+import {
+  Text,
+  Navbar,
+  Button,
+  Link,
+  Avatar,
+  Dropdown,
+  Loading,
+  NavbarToggleProps,
+  NavbarLinkProps,
+} from '@nextui-org/react';
 import NextLink from 'next/link';
 
 import { useRouter } from 'next/router';
@@ -13,6 +23,11 @@ import { UserSquare, FilmStrip, Gear } from 'phosphor-react';
 //   }
 //   console.log(action);
 // }
+
+export type NavItemProps = {
+  title: string;
+  path: string;
+};
 
 export const Navigation = ({}) => {
   const { data: session, status } = useSession();
@@ -35,7 +50,7 @@ export const Navigation = ({}) => {
   const isValidSession = session && session.user.username;
 
   // Placeholder values
-  const collapseItems = [
+  const collapseItems: NavItemProps[] = [
     { title: 'Home', path: '/' },
     // { title: 'Features', path: '/features' },
     // { title: 'Customers', path: '#' },
@@ -44,7 +59,7 @@ export const Navigation = ({}) => {
   ];
 
   // Placeholder values
-  const navLinks = [
+  const navLinks: NavItemProps[] = [
     // { title: 'Features', path: '/features' },
     // { title: 'Articles', path: '#' },
     // { title: 'Cameras', path: '#' },
