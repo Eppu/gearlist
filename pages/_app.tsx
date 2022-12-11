@@ -4,6 +4,9 @@ import { NextUIProvider, createTheme } from '@nextui-org/react';
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 import { Navigation } from '../components/Navigation';
 import { Session } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 const lightTheme = createTheme({
   type: 'light',
@@ -44,9 +47,44 @@ export default function App({ Component, pageProps }: AppProps<{ session: Sessio
         // theme={theme}
         >
           <Navigation />
-          <Component {...pageProps} />
+
+          {
+            // if the current route is /onboarding, don't use Auth wrapper
+            Component.name === 'Onboarding' ? (
+              (console.log("onboarding page, don't use auth wrapper"), (<Component {...pageProps} />))
+            ) : (
+              <Auth>
+                <Component {...pageProps} />
+              </Auth>
+            )
+          }
         </NextUIProvider>
       </NextThemesProvider>
     </SessionProvider>
   );
+}
+
+function Auth({ children }: React.PropsWithChildren<{}>) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const isOnboardedUser = !!session?.user.username;
+
+  useEffect(() => {
+    if (status === 'loading') {
+      // Do nothing while loading
+      return;
+    }
+
+    if (session && !isOnboardedUser) {
+      // If not onboarded, force user to /onboarding
+      router.push('/onboarding');
+    }
+  }, [status, isOnboardedUser, session, router]);
+
+  if (!session || isOnboardedUser || router.route === '/onboarding') {
+    return children as React.ReactElement;
+  }
+
+  // Session is being fetched, or no onboarded user
+  return null;
 }

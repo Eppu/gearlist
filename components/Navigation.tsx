@@ -47,17 +47,17 @@ export const Navigation = ({}) => {
   const collapseItems = [
     { title: 'Home', path: '/' },
     { title: 'Features', path: '/features' },
-    { title: 'Customers', path: '#' },
-    { title: 'Pricing', path: '#' },
-    { title: 'Company', path: '#' },
+    // { title: 'Customers', path: '#' },
+    // { title: 'Pricing', path: '#' },
+    // { title: 'Company', path: '#' },
   ];
 
   // Placeholder values
   const navLinks = [
     { title: 'Features', path: '/features' },
-    { title: 'Customers', path: '#' },
-    { title: 'Pricing', path: '#' },
-    { title: 'Company', path: '#' },
+    // { title: 'Customers', path: '#' },
+    // { title: 'Pricing', path: '#' },
+    // { title: 'Company', path: '#' },
   ];
 
   return (

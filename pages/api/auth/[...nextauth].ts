@@ -12,7 +12,6 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     }),
   ],
-  session: {},
 
   callbacks: {
     async session({ session, token, user }) {
@@ -27,7 +26,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     newUser: '/onboarding',
   },
-  debug: true,
+  // debug: true,
 };
 
 export default NextAuth(authOptions);

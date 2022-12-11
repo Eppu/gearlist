@@ -1,7 +1,15 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Layout } from '../components/Layout';
-import { Container, Text, Spacer, Grid, Input, Button, Row, Loading } from '@nextui-org/react';
+import {
+  Container,
+  Text,
+  Spacer,
+  Input,
+  Button,
+  Row,
+  Loading,
+} from '@nextui-org/react';
 import debounce from 'lodash.debounce';
 import { useState } from 'react';
 
@@ -34,7 +42,10 @@ export default function Onboarding() {
     return available;
   };
 
-  const debouncedCheckUsernameAvailability = debounce(checkUsernameAvailability, 500);
+  const debouncedCheckUsernameAvailability = debounce(
+    checkUsernameAvailability,
+    500
+  );
 
   const updateUser = async (username: string) => {
     setIsSubmitting(true);
@@ -80,7 +91,9 @@ export default function Onboarding() {
         sm
       >
         <Text h1>Welcome to Gearlist!</Text>
-        <Text h4>Before getting started, we&apos;ll need to know what to call you.</Text>
+        <Text h4>
+          Before getting started, we&apos;ll need to know what to call you.
+        </Text>
       </Container>
       <Spacer y={5} />
       <Container display="flex" justify="center" alignContent="center" sm>
@@ -110,9 +123,14 @@ export default function Onboarding() {
             }}
           />
         </Row>
-        <Text css={{ marginTop: '$10' }}>This is what you will be known as in Gearlist.</Text>
+        <Text css={{ marginTop: '$10' }}>
+          This is what you will be known as in Gearlist.
+        </Text>
         <Row justify="center" css={{ marginTop: '$20' }}>
-          <Button disabled={!isAvailable || isSubmitting} onClick={() => updateUser(username)}>
+          <Button
+            disabled={!isAvailable || isSubmitting}
+            onClick={() => updateUser(username)}
+          >
             {isSubmitting ? <Loading color="currentColor" /> : 'Continue'}
           </Button>
         </Row>

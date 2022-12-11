@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import LoginButton from '../components/loginButton';
-import { useSession, getSession } from 'next-auth/react';
+import { useSession, getSession, signIn } from 'next-auth/react';
 import { Item } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { Loading, Container } from '@nextui-org/react';
