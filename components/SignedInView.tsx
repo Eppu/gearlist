@@ -11,7 +11,6 @@ export const SignedInView = () => {
       .then((res) => res.json())
       .then((data) => {
         setData(data);
-        console.log('data: ', data);
         setLoading(false);
       });
   }, []);
@@ -19,21 +18,11 @@ export const SignedInView = () => {
   return (
     <>
       <Container
-        // alignItems="center"
-        // css={{
-        //   position: 'relative',
-        //   height: 'calc(84vh - 76px)',
-        //   '@xsMax': {
-        //     height: 'calc(100vh - 64px)',
-        //   },
-        // }}
         display="flex"
         gap={0}
-        // justify="center"
         lg={true}
         wrap="nowrap"
         css={{
-          // set top padding
           pt: '$10',
         }}
       >
@@ -57,20 +46,8 @@ export const SignedInView = () => {
                 </Card.Footer>
               </Card>
             </Grid>
-            // <Grid key={i} xs={12} md={6} justify="center">
-            //   <Text>{item.title}</Text>
-            //   <Text>{item.template.brand}</Text>
-            //   <Text>{item.template.model}</Text>
-            // </Grid>
           ))
         )}
-
-        {/* <Grid xs={12} md={6} justify="center">
-          <h2>Grid 1</h2>
-        </Grid>
-        <Grid xs={12} md={6} justify="center">
-          <h2>Grid 2</h2>
-        </Grid> */}
       </Grid.Container>
     </>
   );
