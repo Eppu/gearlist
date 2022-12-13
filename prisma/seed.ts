@@ -1,5 +1,5 @@
 import { Category, ItemTemplate, PrismaClient } from '@prisma/client';
-import templateJson from './templates.json';
+import templateJson from './templates.sample.json';
 
 // This only ever runs once, so create a new client for each run
 const prisma = new PrismaClient();
