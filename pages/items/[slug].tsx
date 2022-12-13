@@ -29,9 +29,6 @@ export async function getStaticPaths() {
       slug: `${itemTemplate.brand}-${itemTemplate.model}-${itemTemplate.id}`.replace(/\s+/g, '-').toLowerCase(),
     },
   }));
-
-  console.log('paths: ', paths);
-
   return {
     paths,
     fallback: 'blocking', // could be true also
@@ -40,9 +37,6 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context: any): Promise<GetStaticPropsResult<any>> {
   const itemTemplateId = Number(context.params.slug.split('-').pop());
-  console.log('itemTemplateId: ', itemTemplateId);
-  console.log('typeof itemTemplateId: ', typeof itemTemplateId);
-
   const itemTemplate = await prisma.itemTemplate.findUnique({
     where: {
       id: itemTemplateId,
@@ -61,8 +55,6 @@ export async function getStaticProps(context: any): Promise<GetStaticPropsResult
     createdAt: itemTemplate.createdAt?.toISOString(),
     updatedAt: itemTemplate.updatedAt?.toISOString(),
   };
-
-  console.log('parsedItemTemplate: ', parsedItemTemplate);
 
   return {
     props: {
