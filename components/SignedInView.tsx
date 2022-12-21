@@ -1,4 +1,5 @@
 import { Container, Grid, Row, Text, Card } from '@nextui-org/react';
+import { Layout } from '../components/Layout';
 import { useState, useEffect } from 'react';
 
 export const SignedInView = () => {
@@ -16,10 +17,10 @@ export const SignedInView = () => {
   }, []);
 
   return (
-    <>
+    <Layout>
       <Container
         display="flex"
-        gap={0}
+        // gap={0}
         lg={true}
         wrap="nowrap"
         css={{
@@ -49,6 +50,6 @@ export const SignedInView = () => {
           ))
         )}
       </Grid.Container>
-    </>
+    </Layout>
   );
 };

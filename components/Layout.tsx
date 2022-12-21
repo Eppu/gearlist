@@ -17,12 +17,12 @@ export const Layout = ({ children }: React.PropsWithChildren<{}>) => (
           '@mdMax': {
             overflowX: 'hidden',
           },
-          // paddingLeft: '0',
-          // paddingRight: '0',
+          paddingLeft: '0',
+          paddingRight: '0',
         }}
         display="flex"
         id="main-container"
-        lg={true}
+        lg
       >
         {children}
         {/* <Footer /> */}

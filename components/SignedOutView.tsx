@@ -30,7 +30,7 @@ export const SignedOutView = () => {
         },
       }}
       display="flex"
-      gap={0}
+      // gap={0}
       justify="space-between"
       lg={true}
       wrap="nowrap"

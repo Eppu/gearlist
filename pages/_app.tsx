@@ -43,11 +43,8 @@ export default function App({ Component, pageProps }: AppProps<{ session: Sessio
           dark: darkTheme.className,
         }}
       >
-        <NextUIProvider
-        // theme={theme}
-        >
+        <NextUIProvider>
           <Navigation />
-
           {
             // if the current route is /onboarding, don't use Auth wrapper
             Component.name === 'Onboarding' ? (
