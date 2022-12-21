@@ -1,6 +1,7 @@
 import { Layout } from '../components/Layout';
 import { useTheme as useNextTheme } from 'next-themes';
 import { Switch, useTheme, Container, Text, Row, Grid, Card } from '@nextui-org/react';
+import { Sun, Moon } from 'phosphor-react';
 
 export default function Features() {
   const { setTheme } = useNextTheme();
@@ -19,7 +20,12 @@ export default function Features() {
                 <Text h4>Currently using {type} mode</Text>
               </Grid>
               <Grid>
-                <Switch checked={isDark} onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')} />
+                <Switch
+                  checked={isDark}
+                  iconOn={<Moon weight="fill" />}
+                  iconOff={<Sun weight="bold" />}
+                  onChange={(e) => setTheme(e.target.checked ? 'dark' : 'light')}
+                />
               </Grid>
             </Grid.Container>
           </Row>
