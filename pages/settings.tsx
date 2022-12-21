@@ -1,6 +1,6 @@
 import { Layout } from '../components/Layout';
 import { useTheme as useNextTheme } from 'next-themes';
-import { Switch, useTheme, Spacer, Container, Text, Row, Grid, Card } from '@nextui-org/react';
+import { Switch, useTheme, Container, Text, Row, Grid, Card } from '@nextui-org/react';
 
 export default function Features() {
   const { setTheme } = useNextTheme();
@@ -23,11 +23,6 @@ export default function Features() {
               </Grid>
             </Grid.Container>
           </Row>
-          {/* <Container>
-        
-        <Spacer y={1} />
-        
-      </Container> */}
         </Container>
       </Card>
     </Layout>
