@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"] // This is a preview feature, it may break in the future.
 }
 
@@ -13,18 +13,18 @@ datasource db {
 
 // *** Auth ***
 model Account {
-  id                 String  @id @default(cuid())
-  userId             Int
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -42,13 +42,13 @@ model Session {
 // *** ***
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  username String? @unique
-  name  String?
-  items Item[]
-  collections Collection[]
-  createdAt DateTime @default(now())
+  id            Int          @id @default(autoincrement())
+  email         String       @unique
+  username      String?      @unique
+  name          String?
+  items         Item[]
+  collections   Collection[]
+  createdAt     DateTime     @default(now())
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -56,42 +56,42 @@ model User {
 }
 
 model ItemTemplate {
-  id    Int     @id @default(autoincrement())
-  brand String
-  model  String
+  id        Int       @id @default(autoincrement())
+  brand     String
+  model     String
   category  Category?
-  items Item[]
-  imageUrl String? 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  items     Item[]
+  imageUrl  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Item {
-  id        String     @id @default(uuid())
-  title     String?
+  id           String        @id @default(uuid())
+  title        String?
   serialNumber String?
-  price     Float?
-  image     String?
-  published Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  Int?
-  template  ItemTemplate? @relation(fields: [templateId], references: [id])
-  templateId Int?
-  collections Collection[]
+  price        Float?
+  image        String?
+  published    Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  author       User?         @relation(fields: [authorId], references: [id])
+  authorId     Int?
+  template     ItemTemplate? @relation(fields: [templateId], references: [id])
+  templateId   Int?
+  collections  Collection[]
 }
 
 // Create a model called collection. A collection can have multiple items owned by a single user.
 model Collection {
-  id        String     @id @default(uuid())
-  title     String
+  id          String   @id @default(uuid())
+  title       String
   description String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User   @relation(fields: [authorId], references: [id])
-  authorId  Int
-  items Item[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    Int
+  items       Item[]
 }
 
 enum Category {

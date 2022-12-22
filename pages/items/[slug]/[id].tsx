@@ -21,6 +21,8 @@ type ItemTemplate = {
   id: number;
   brand: string;
   model: string;
+  imageUrl?: string;
+  category?: string;
   createdAt?: String;
   updatedAt?: String;
   items?: Item[];
@@ -107,7 +109,9 @@ export default function ItemTemplatePage({
               <Image
                 width={350}
                 height={250}
-                src="https://via.placeholder.com/350x250"
+                src={
+                  itemTemplate.imageUrl || 'https://via.placeholder.com/350x250'
+                }
               />
             </Col>
             <Col>
