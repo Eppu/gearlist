@@ -25,7 +25,6 @@ export const Layout = ({ children }: React.PropsWithChildren<{}>) => (
         lg
       >
         {children}
-        {/* <Footer /> */}
       </Container>
     </div>
   </>

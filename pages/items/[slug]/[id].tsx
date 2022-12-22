@@ -3,7 +3,17 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Layout } from '../../../components/Layout';
 import Head from 'next/head';
-import { Container, Grid, Text, Spacer, Link, Row } from '@nextui-org/react';
+import {
+  Container,
+  Grid,
+  Text,
+  Spacer,
+  Link,
+  Row,
+  Card,
+  Col,
+  Image,
+} from '@nextui-org/react';
 import { GetStaticPropsResult } from 'next';
 import { Item } from '@prisma/client';
 
@@ -22,7 +32,9 @@ export async function getStaticPaths() {
   // create paths by combining brand and model followed by id for each item template
   const paths = itemTemplates.map((itemTemplate) => ({
     params: {
-      slug: `${itemTemplate.brand}-${itemTemplate.model}`.replace(/\s+/g, '-').toLowerCase(),
+      slug: `${itemTemplate.brand}-${itemTemplate.model}`
+        .replace(/\s+/g, '-')
+        .toLowerCase(),
       id: itemTemplate.id.toString(),
     },
   }));
@@ -32,8 +44,9 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps(context: any): Promise<GetStaticPropsResult<any>> {
-  // const itemTemplateId = Number(context.params.slug.split('-').pop());
+export async function getStaticProps(
+  context: any
+): Promise<GetStaticPropsResult<any>> {
   const itemTemplateId = Number(context.params.id);
   const itemTemplate = await prisma.itemTemplate.findUnique({
     where: {
@@ -57,7 +70,11 @@ export async function getStaticProps(context: any): Promise<GetStaticPropsResult
   };
 }
 
-export default function ItemTemplatePage({ itemTemplate }: { itemTemplate: ItemTemplate }) {
+export default function ItemTemplatePage({
+  itemTemplate,
+}: {
+  itemTemplate: ItemTemplate;
+}) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -75,18 +92,63 @@ export default function ItemTemplatePage({ itemTemplate }: { itemTemplate: ItemT
         <title>{`Gearlist | ${itemTemplate.brand} ${itemTemplate.model}`}</title>
       </Head>
       {/* <Container xl css={{ padding: '$10 $7' }}> */}
-      <Row css={{ padding: '$15 0' }}>
-        <h1>
-          {itemTemplate.brand} {itemTemplate.model}
-        </h1>
-      </Row>
-      <Grid.Container gap={2} justify="center">
-        {itemTemplate.items?.map((item) => (
-          <Grid key={item.id}>
-            <Text h3>{JSON.stringify(item)}</Text>
-          </Grid>
-        ))}
-      </Grid.Container>
+
+      <Container fluid>
+        <Row css={{ padding: '$15 0' }}>
+          <h1>
+            {itemTemplate.brand} {itemTemplate.model}
+          </h1>
+        </Row>
+        <Card>
+          {/* <Card.Body> */}
+          <Row gap={1} css={{ padding: '$15 0' }}>
+            {/* <Card> */}
+            <Col>
+              <Image
+                width={350}
+                height={250}
+                src="https://via.placeholder.com/350x250"
+              />
+            </Col>
+            <Col>
+              <Container>
+                <Text>Item description goes here</Text>
+                {/* {JSON.stringify(itemTemplate)} */}
+              </Container>
+            </Col>
+          </Row>
+          {/* </Card.Body> */}
+        </Card>
+        <Grid.Container gap={2} justify="center">
+          {itemTemplate.items?.map((item) => (
+            <Grid key={item.id} sm={3} xs={6}>
+              <Card variant="bordered">
+                <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
+                  <Col>
+                    <Text
+                      size={12}
+                      weight="bold"
+                      transform="uppercase"
+                      color="#ffffffAA"
+                    >
+                      {itemTemplate.brand} {itemTemplate.model}
+                    </Text>
+                    <Text h4 color="white">
+                      {item.title}
+                    </Text>
+                  </Col>
+                </Card.Header>
+                <Card.Image
+                  src={item.image as string}
+                  objectFit="cover"
+                  width="100%"
+                  height="auto"
+                />
+              </Card>
+            </Grid>
+          ))}
+        </Grid.Container>
+      </Container>
     </Layout>
   );
 }
