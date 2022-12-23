@@ -113,6 +113,8 @@ export default function Onboarding() {
             required
             status={isAvailable ? 'success' : 'default'}
             onChange={(e) => {
+              console.log('e', e.target.value);
+              e.target.value = e.target.value.toLowerCase();
               debouncedCheckUsernameAvailability(e.target.value);
             }}
             css={{
