@@ -49,6 +49,11 @@ export default function NewItem() {
 
     const data = await res.json();
 
+    if (!data) {
+      setIsLoading(false);
+      return;
+    }
+
     console.log(`got data with query ${brand}`, data);
     setIsLoading(false);
     setSearchResults(data.items);
@@ -74,7 +79,7 @@ export default function NewItem() {
           />
           <Spacer y={1} />
           {/*  if there are search results, display them */}
-          {searchResults.length > 0 && (
+          {searchResults && searchResults.length > 0 && (
             <Container css={{ p: '$0' }}>
               {searchResults.map((result) => (
                 <Row
