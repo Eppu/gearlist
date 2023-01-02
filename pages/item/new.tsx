@@ -41,10 +41,10 @@ export default function NewItem() {
     setIsLoading(true);
     const res = await fetch(`/api/items/search`, {
       method: 'POST',
-      body: JSON.stringify({ query: brand }),
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({ query: brand }),
     });
 
     const data = await res.json();
@@ -53,7 +53,8 @@ export default function NewItem() {
     setIsLoading(false);
     setSearchResults(data.items);
 
-    return data;
+    // return data;
+    return;
   };
 
   const debouncedSearchBrand = debounce(searchBrand, 500);
