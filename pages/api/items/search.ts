@@ -20,33 +20,28 @@ export default async function handler(
     const sanitizedQuery = query.trim();
 
     // Find item templates that match the search term
-    await prisma.itemTemplate
-      .findMany({
-        take: limit || 10,
-        where: {
-          brand: {
-            search: sanitizedQuery.split(' ').join(' & '), // manual sanitization since Prisma doesn't support multiple string search terms
-          },
-          OR: [
-            {
-              model: {
-                search: sanitizedQuery.split(' ').join(' & ') as string, // manual sanitization
-              },
-            },
-          ],
+    const result = await prisma.itemTemplate.findMany({
+      take: limit || 10,
+      where: {
+        brand: {
+          search: sanitizedQuery.split(' ').join(' & '), // manual sanitization since Prisma doesn't support multiple string search terms
         },
-      })
-      .then((items) => {
-        res.status(200).json({ count: items.length, items });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          message: 'Items retrieval failed',
-          error: err,
-        });
-      });
-    // }
-    // res.status(400).json({ message: 'No search term provided' });
+        OR: [
+          {
+            model: {
+              search: sanitizedQuery.split(' ').join(' & ') as string, // manual sanitization
+            },
+          },
+        ],
+      },
+    });
+
+    if (!result) {
+      res.status(500).json({ message: 'Items retrieval failed' });
+      return;
+    }
+
+    res.status(200).json({ count: result.length, items: result });
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }
