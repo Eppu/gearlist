@@ -5,7 +5,6 @@ import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
 
 type Inputs = {
-  //   example: string;
   brand: string;
   model: string;
 };
@@ -33,21 +32,45 @@ export default function NewItem() {
 
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
+  const [error, setError] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedTemplate, setSelectedTemplate] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
   const searchBrand = async (brand: string) => {
+    if (brand.length === 0) {
+      setSearchTerm('');
+      setSearchResults([]);
+      return;
+    }
+
     setIsLoading(true);
-    const res = await fetch(`/api/items/search`, {
+    setSearchTerm(brand);
+    const data = await fetch(`/api/items/search`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ query: brand }),
-    });
-
-    const data = await res.json();
+    })
+      .then((res) => {
+        if (!res.ok) {
+          if (res.status === 401) {
+            setError(
+              'You are not authorized to access this resource. Try logging in again.'
+            );
+          } else {
+            setError('Something went wrong. Try again in a few minutes!');
+          }
+        }
+        return res.json();
+      })
+      .catch((err) => {
+        setError(err.message);
+        setIsLoading(false);
+        return;
+      });
 
     if (!data) {
       setIsLoading(false);
@@ -57,8 +80,6 @@ export default function NewItem() {
     console.log(`got data with query ${brand}`, data);
     setIsLoading(false);
     setSearchResults(data.items);
-
-    // return data;
     return;
   };
 
@@ -73,11 +94,17 @@ export default function NewItem() {
           <Input
             clearable
             bordered
+            // fullWidth
             labelPlaceholder="Search for an item"
-            // value={brand}
-            onChange={(e) => debouncedSearchBrand(e.target.value)}
+            onChange={(e) => {
+              debouncedSearchBrand(e.target.value);
+            }}
           />
           <Spacer y={1} />
+          {error && <p>{error}</p>}
+          {searchTerm && searchResults.length === 0 && (
+            <p>No results found for {searchTerm}</p>
+          )}
           {/*  if there are search results, display them */}
           {searchResults && searchResults.length > 0 && (
             <Container css={{ p: '$0' }}>
@@ -95,7 +122,7 @@ export default function NewItem() {
             </Container>
           )}
 
-          <input type="submit" />
+          {/* <input type="submit" /> */}
         </form>
       </Container>
     </Layout>
