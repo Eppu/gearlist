@@ -95,6 +95,20 @@ export default function NewItem() {
       return;
     }
     console.log('adding item', selectedTemplate);
+
+    const data = await fetch(`/api/items`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(selectedTemplate),
+    }).then((res) => {
+      if (!res.ok) {
+        setError('Something went wrong. Try again in a few minutes!');
+      }
+      console.log('created a new item: ', data);
+      return res.json();
+    });
   };
 
   const debouncedSearchBrand = debounce(searchBrand, 500);
