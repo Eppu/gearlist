@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Container, Row, Input, Spacer, Loading } from '@nextui-org/react';
+import { Container, Row, Input, Spacer, Loading, Text, Card, Button } from '@nextui-org/react';
 import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
 
@@ -19,6 +19,13 @@ type SearchResult = {
   imageUrl: string;
 };
 
+enum Category {
+  CAMERA = 'Camera',
+  LENS = 'Lens',
+  ACCESSORY = 'Accessory',
+  BAG = 'Bag',
+}
+
 export default function NewItem() {
   const {
     register,
@@ -34,7 +41,8 @@ export default function NewItem() {
   const [model, setModel] = useState('');
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState({} as SearchResult);
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
 
@@ -81,44 +89,97 @@ export default function NewItem() {
     return;
   };
 
+  const handleAddItem = async () => {
+    if (!selectedTemplate) {
+      setError('No template selected.');
+      return;
+    }
+    console.log('adding item', selectedTemplate);
+  };
+
   const debouncedSearchBrand = debounce(searchBrand, 500);
 
   return (
     <Layout>
       <Container css={{ mt: '$20' }}>
-        {isLoading && <Loading />}
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {/* register your input into the hook by invoking the "register" function */}
-          <Input
-            clearable
-            bordered
-            // fullWidth
-            labelPlaceholder="Search for an item"
-            onChange={(e) => {
-              debouncedSearchBrand(e.target.value);
-            }}
-          />
-          <Spacer y={1} />
-          {error && <p>{error}</p>}
-          {!isLoading && searchTerm && searchResults && searchResults.length === 0 && (
-            <p>No results found for {searchTerm}</p>
-          )}
-          {/*  if there are search results, display them */}
-          {searchResults && searchResults.length > 0 && (
-            <Container css={{ p: '$0' }}>
-              {searchResults.map((result) => (
-                <Row key={result.id} onClick={(e) => setSelectedTemplate(result.id)}>
-                  <a>
-                    {result.brand} {result.model}
-                  </a>
-                  <Spacer y={2} />
-                </Row>
-              ))}
-            </Container>
-          )}
+        <Text h1>Add gear</Text>
+        <Card css={{ p: '$16 0' }}>
+          <Container
+          // css={{ p: '$15 $10' }}
+          >
+            {/* register your input into the hook by invoking the "register" function */}
+            <Input
+              clearable
+              bordered
+              size={'lg'}
+              fullWidth
+              labelPlaceholder="Search for an item"
+              contentRight={isLoading ? <Loading size="xs" /> : null}
+              onChange={(e) => {
+                debouncedSearchBrand(e.target.value);
+              }}
+            />
+            {(error || (searchResults && searchResults.length !== 0)) && <Spacer y={1} />}
+            {error && <p>{error}</p>}
+            {!isLoading && searchTerm && searchResults && searchResults.length === 0 && (
+              <p>No results found for {searchTerm}</p>
+            )}
+            {/* </Row> */}
+          </Container>
+          <Container>
+            {/* display search results */}
+            {searchResults && searchResults.length > 0 && (
+              <Container css={{ p: '$0' }}>
+                {searchResults.map((result) => (
+                  <Row key={result.id} onClick={(e) => setSelectedTemplateId(result.id)}>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault();
+                        // set the template object to state so we can use it in the next step
+                        console.log('selectedTemplate', selectedTemplate);
+                        setSelectedTemplate(result);
+                        setSearchTerm('');
+                        setSearchResults([]);
+                        console.log('clicked', result);
+                        console.log('state is now: ', selectedTemplate);
+                      }}
+                    >
+                      {result.brand} {result.model}
+                    </a>
+                    <Spacer y={2} />
+                  </Row>
+                ))}
+              </Container>
+            )}
 
-          {/* <input type="submit" /> */}
-        </form>
+            {/* if there is a selected template, show its information */}
+            {selectedTemplate && selectedTemplate.id && (
+              <>
+                <Container css={{ p: '$0', mt: '$15' }}>
+                  <Text h3>
+                    {selectedTemplate.brand} {selectedTemplate.model},{' '}
+                    {Category[selectedTemplate.category as keyof typeof Category]}
+                  </Text>
+                  {/* TODO: Add images, description etc. here after data is populated */}
+                  {/* <pre>{JSON.stringify(selectedTemplate)}</pre> */}
+                  <Spacer y={2} />
+                </Container>
+                <Container
+                  fluid
+                  display="flex"
+                  justify="center"
+                  alignContent="center"
+                  alignItems="center"
+                  css={{ p: '$5' }}
+                >
+                  <Button onClick={handleAddItem}>Add to my items</Button>
+                </Container>
+              </>
+            )}
+
+            {/* <input type="submit" /> */}
+          </Container>
+        </Card>
       </Container>
     </Layout>
   );
