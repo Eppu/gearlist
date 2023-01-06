@@ -57,9 +57,7 @@ export default function NewItem() {
       .then((res) => {
         if (!res.ok) {
           if (res.status === 401) {
-            setError(
-              'You are not authorized to access this resource. Try logging in again.'
-            );
+            setError('You are not authorized to access this resource. Try logging in again.');
           } else {
             setError('Something went wrong. Try again in a few minutes!');
           }
@@ -102,17 +100,14 @@ export default function NewItem() {
           />
           <Spacer y={1} />
           {error && <p>{error}</p>}
-          {searchTerm && searchResults.length === 0 && (
+          {!isLoading && searchTerm && searchResults && searchResults.length === 0 && (
             <p>No results found for {searchTerm}</p>
           )}
           {/*  if there are search results, display them */}
           {searchResults && searchResults.length > 0 && (
             <Container css={{ p: '$0' }}>
               {searchResults.map((result) => (
-                <Row
-                  key={result.id}
-                  onClick={(e) => setSelectedTemplate(result.id)}
-                >
+                <Row key={result.id} onClick={(e) => setSelectedTemplate(result.id)}>
                   <a>
                     {result.brand} {result.model}
                   </a>
