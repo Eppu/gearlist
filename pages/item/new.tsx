@@ -3,6 +3,10 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { Container, Row, Input, Spacer, Loading, Text, Card, Button } from '@nextui-org/react';
 import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
+import Dropzone from 'react-dropzone';
+import { useSession } from 'next-auth/react';
+// import { supabase } from '../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
 
 type Inputs = {
   brand: string;
@@ -34,6 +38,8 @@ export default function NewItem() {
     formState: { errors },
   } = useForm<Inputs>();
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+
+  const { data: session, status } = useSession();
 
   //   console.log(watch('brand')); // watch input value by passing the name of it
 
@@ -113,6 +119,33 @@ export default function NewItem() {
 
   const debouncedSearchBrand = debounce(searchBrand, 500);
 
+  const handleImageUpload = async (acceptedFiles: File[]) => {
+    if (!session || !session.supabaseAccessToken) {
+      setError('You are not authorized to access this resource. Try logging in again.');
+      return;
+    }
+
+    // TODO: Refactor this. The client should be created once and then reused, but I'm not sure how to do that since it needs the session for the authorization header.
+    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+      global: {
+        headers: {
+          Authorization: `Bearer ${session.supabaseAccessToken}`,
+        },
+      },
+    });
+    console.log('acceptedFiles', acceptedFiles);
+    const file = acceptedFiles[0];
+    const { data, error } = await supabase.storage.from('user-uploads').upload(`item-${selectedTemplateId}.jpg`, file, {
+      cacheControl: '3600',
+      upsert: false,
+    });
+    if (error) {
+      console.log('error', error);
+      return;
+    }
+    console.log('data', data);
+  };
+
   return (
     <Layout>
       <Container css={{ mt: '$20' }}>
@@ -170,6 +203,16 @@ export default function NewItem() {
             {selectedTemplate && selectedTemplate.id && (
               <>
                 <Container css={{ p: '$0', mt: '$15' }}>
+                  <Dropzone onDrop={(acceptedFiles) => handleImageUpload(acceptedFiles)}>
+                    {({ getRootProps, getInputProps }) => (
+                      <section>
+                        <div {...getRootProps()}>
+                          <input {...getInputProps()} />
+                          <p>Drag and drop some files here, or click to select files</p>
+                        </div>
+                      </section>
+                    )}
+                  </Dropzone>
                   <Text h3>
                     {selectedTemplate.brand} {selectedTemplate.model},{' '}
                     {Category[selectedTemplate.category as keyof typeof Category]}

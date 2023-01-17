@@ -6,8 +6,9 @@ declare module 'next-auth' {
    */
   interface Session {
     userId: string;
+    // Authorization header used with supabase-js for RLS.
+    supabaseAccessToken: string;
     user: {
-      /** The user's postal address. */
       id: number;
     } & DefaultSession['user'];
   }
