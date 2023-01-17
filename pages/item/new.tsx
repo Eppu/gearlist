@@ -126,6 +126,7 @@ export default function NewItem() {
     }
 
     // TODO: Refactor this. The client should be created once and then reused, but I'm not sure how to do that since it needs the session for the authorization header.
+    // Also, it would be neater to move this to an API route.
     const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
       global: {
         headers: {
