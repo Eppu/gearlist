@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Container, Row, Input, Spacer, Loading, Text, Card, Button } from '@nextui-org/react';
+import {
+  Container,
+  Row,
+  Input,
+  Spacer,
+  Loading,
+  Text,
+  Card,
+  Button,
+} from '@nextui-org/react';
 import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
 import Dropzone from 'react-dropzone';
@@ -51,6 +60,7 @@ export default function NewItem() {
   const [selectedTemplate, setSelectedTemplate] = useState({} as SearchResult);
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [files, setFiles] = useState<any[]>([]);
 
   const searchBrand = async (brand: string) => {
     if (brand.length === 0) {
@@ -71,7 +81,9 @@ export default function NewItem() {
       .then((res) => {
         if (!res.ok) {
           if (res.status === 401) {
-            setError('You are not authorized to access this resource. Try logging in again.');
+            setError(
+              'You are not authorized to access this resource. Try logging in again.'
+            );
           } else {
             setError('Something went wrong. Try again in a few minutes!');
           }
@@ -121,25 +133,33 @@ export default function NewItem() {
 
   const handleImageUpload = async (acceptedFiles: File[]) => {
     if (!session || !session.supabaseAccessToken) {
-      setError('You are not authorized to access this resource. Try logging in again.');
+      setError(
+        'You are not authorized to access this resource. Try logging in again.'
+      );
       return;
     }
 
     // TODO: Refactor this. The client should be created once and then reused, but I'm not sure how to do that since it needs the session for the authorization header.
     // Also, it would be neater to move this to an API route.
-    const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
-      global: {
-        headers: {
-          Authorization: `Bearer ${session.supabaseAccessToken}`,
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${session.supabaseAccessToken}`,
+          },
         },
-      },
-    });
+      }
+    );
     console.log('acceptedFiles', acceptedFiles);
     const file = acceptedFiles[0];
-    const { data, error } = await supabase.storage.from('user-uploads').upload(`item-${selectedTemplateId}.jpg`, file, {
-      cacheControl: '3600',
-      upsert: false,
-    });
+    const { data, error } = await supabase.storage
+      .from('user-uploads')
+      .upload(`item-${selectedTemplateId}.jpg`, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
     if (error) {
       console.log('error', error);
       return;
@@ -167,19 +187,68 @@ export default function NewItem() {
                 debouncedSearchBrand(e.target.value);
               }}
             />
-            {(error || (searchResults && searchResults.length !== 0)) && <Spacer y={1} />}
-            {error && <p>{error}</p>}
-            {!isLoading && searchTerm && searchResults && searchResults.length === 0 && (
-              <p>No results found for {searchTerm}</p>
+            {(error || (searchResults && searchResults.length !== 0)) && (
+              <Spacer y={1} />
             )}
+            {error && <p>{error}</p>}
+            {!isLoading &&
+              searchTerm &&
+              searchResults &&
+              searchResults.length === 0 && (
+                <p>No results found for {searchTerm}</p>
+              )}
             {/* </Row> */}
           </Container>
           <Container>
+            <Dropzone
+              accept={{ 'image/jpeg': ['.jpg', '.jpeg', '.png'] }}
+              onDrop={
+                (acceptedFiles) => {
+                  console.log('acceptedFiles', acceptedFiles);
+                  setFiles(
+                    acceptedFiles.map((file) =>
+                      Object.assign(file, {
+                        preview: URL.createObjectURL(file),
+                      })
+                    )
+                  );
+                }
+                // handleImageUpload(acceptedFiles)
+              }
+            >
+              {({ getRootProps, getInputProps }) => (
+                <section>
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <p>
+                      Drag and drop some files here, or click to select files
+                    </p>
+                  </div>
+                </section>
+              )}
+            </Dropzone>
+
+            {files.map((file) => (
+              <div key={file.name}>
+                <div>
+                  <img
+                    src={file.preview}
+                    // Revoke data uri after image is loaded
+                    onLoad={() => {
+                      URL.revokeObjectURL(file.preview);
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
             {/* display search results */}
             {searchResults && searchResults.length > 0 && (
               <Container css={{ p: '$0' }}>
                 {searchResults.map((result) => (
-                  <Row key={result.id} onClick={(e) => setSelectedTemplateId(result.id)}>
+                  <Row
+                    key={result.id}
+                    onClick={(e) => setSelectedTemplateId(result.id)}
+                  >
                     <a
                       onClick={(e) => {
                         e.preventDefault();
@@ -204,7 +273,7 @@ export default function NewItem() {
             {selectedTemplate && selectedTemplate.id && (
               <>
                 <Container css={{ p: '$0', mt: '$15' }}>
-                  <Dropzone onDrop={(acceptedFiles) => handleImageUpload(acceptedFiles)}>
+                  {/* <Dropzone onDrop={(acceptedFiles) => handleImageUpload(acceptedFiles)}>
                     {({ getRootProps, getInputProps }) => (
                       <section>
                         <div {...getRootProps()}>
@@ -213,10 +282,14 @@ export default function NewItem() {
                         </div>
                       </section>
                     )}
-                  </Dropzone>
+                  </Dropzone> */}
                   <Text h3>
                     {selectedTemplate.brand} {selectedTemplate.model},{' '}
-                    {Category[selectedTemplate.category as keyof typeof Category]}
+                    {
+                      Category[
+                        selectedTemplate.category as keyof typeof Category
+                      ]
+                    }
                   </Text>
                   {/* TODO: Add images, description etc. here after data is populated */}
                   {/* <pre>{JSON.stringify(selectedTemplate)}</pre> */}
