@@ -1,15 +1,6 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import {
-  Container,
-  Row,
-  Input,
-  Spacer,
-  Loading,
-  Text,
-  Card,
-  Button,
-} from '@nextui-org/react';
+import { Container, Row, Input, Spacer, Loading, Text, Card, Button } from '@nextui-org/react';
 import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
 import Dropzone from 'react-dropzone';
@@ -81,9 +72,7 @@ export default function NewItem() {
       .then((res) => {
         if (!res.ok) {
           if (res.status === 401) {
-            setError(
-              'You are not authorized to access this resource. Try logging in again.'
-            );
+            setError('You are not authorized to access this resource. Try logging in again.');
           } else {
             setError('Something went wrong. Try again in a few minutes!');
           }
@@ -114,57 +103,50 @@ export default function NewItem() {
     }
     console.log('adding item', selectedTemplate);
 
+    let image = '';
+
+    if (files.length > 0) {
+      image = await handleImageUpload(files);
+      console.log('got imageUrl: ', image);
+    }
+
     const data = await fetch(`/api/items`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(selectedTemplate),
+      body: JSON.stringify({ ...selectedTemplate, image }),
     }).then((res) => {
       if (!res.ok) {
         setError('Something went wrong. Try again in a few minutes!');
       }
-      console.log('created a new item: ', data);
       return res.json();
     });
+    console.log('created a new item: ', data);
   };
 
   const debouncedSearchBrand = debounce(searchBrand, 500);
 
-  const handleImageUpload = async (acceptedFiles: File[]) => {
+  const handleImageUpload = async (acceptedFiles: any[]) => {
     if (!session || !session.supabaseAccessToken) {
-      setError(
-        'You are not authorized to access this resource. Try logging in again.'
-      );
+      setError('You are not authorized to access this resource. Try logging in again.');
       return;
     }
 
-    // TODO: Refactor this. The client should be created once and then reused, but I'm not sure how to do that since it needs the session for the authorization header.
-    // Also, it would be neater to move this to an API route.
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${session.supabaseAccessToken}`,
-          },
-        },
+    const formData = new FormData();
+    formData.append('image', acceptedFiles[0]);
+
+    const result = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    }).then((res) => {
+      if (!res.ok) {
+        setError('Something went wrong while uploading your image. Try again in a few minutes!');
       }
-    );
-    console.log('acceptedFiles', acceptedFiles);
-    const file = acceptedFiles[0];
-    const { data, error } = await supabase.storage
-      .from('user-uploads')
-      .upload(`item-${selectedTemplateId}.jpg`, file, {
-        cacheControl: '3600',
-        upsert: false,
-      });
-    if (error) {
-      console.log('error', error);
-      return;
-    }
-    console.log('data', data);
+      return res.json();
+    });
+
+    return result.url;
   };
 
   return (
@@ -187,21 +169,20 @@ export default function NewItem() {
                 debouncedSearchBrand(e.target.value);
               }}
             />
-            {(error || (searchResults && searchResults.length !== 0)) && (
-              <Spacer y={1} />
-            )}
+            {(error || (searchResults && searchResults.length !== 0)) && <Spacer y={1} />}
             {error && <p>{error}</p>}
-            {!isLoading &&
-              searchTerm &&
-              searchResults &&
-              searchResults.length === 0 && (
-                <p>No results found for {searchTerm}</p>
-              )}
+            {!isLoading && searchTerm && searchResults && searchResults.length === 0 && (
+              <p>No results found for {searchTerm}</p>
+            )}
             {/* </Row> */}
           </Container>
           <Container>
             <Dropzone
               accept={{ 'image/jpeg': ['.jpg', '.jpeg', '.png'] }}
+              // onDrop={(acceptedFiles) => {
+              //   console.log('acceptedFiles', acceptedFiles);
+              //   setFiles(acceptedFiles);
+              // }}
               onDrop={
                 (acceptedFiles) => {
                   console.log('acceptedFiles', acceptedFiles);
@@ -220,9 +201,7 @@ export default function NewItem() {
                 <section>
                   <div {...getRootProps()}>
                     <input {...getInputProps()} />
-                    <p>
-                      Drag and drop some files here, or click to select files
-                    </p>
+                    <p>Drag and drop some files here, or click to select files</p>
                   </div>
                 </section>
               )}
@@ -234,9 +213,9 @@ export default function NewItem() {
                   <img
                     src={file.preview}
                     // Revoke data uri after image is loaded
-                    onLoad={() => {
-                      URL.revokeObjectURL(file.preview);
-                    }}
+                    // onLoad={() => {
+                    //   URL.revokeObjectURL(file.preview);
+                    // }}
                   />
                 </div>
               </div>
@@ -245,10 +224,7 @@ export default function NewItem() {
             {searchResults && searchResults.length > 0 && (
               <Container css={{ p: '$0' }}>
                 {searchResults.map((result) => (
-                  <Row
-                    key={result.id}
-                    onClick={(e) => setSelectedTemplateId(result.id)}
-                  >
+                  <Row key={result.id} onClick={(e) => setSelectedTemplateId(result.id)}>
                     <a
                       onClick={(e) => {
                         e.preventDefault();
@@ -285,11 +261,7 @@ export default function NewItem() {
                   </Dropzone> */}
                   <Text h3>
                     {selectedTemplate.brand} {selectedTemplate.model},{' '}
-                    {
-                      Category[
-                        selectedTemplate.category as keyof typeof Category
-                      ]
-                    }
+                    {Category[selectedTemplate.category as keyof typeof Category]}
                   </Text>
                   {/* TODO: Add images, description etc. here after data is populated */}
                   {/* <pre>{JSON.stringify(selectedTemplate)}</pre> */}
