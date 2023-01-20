@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import checkSession from '../../../lib/checkSession';
 import formidable from 'formidable';
 import fs from 'fs';
+import sharp from 'sharp';
 
 export const config = {
   api: {
@@ -31,14 +32,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
 
   // TODO: Refactor <any> to a proper type
   const promise = new Promise<any>((resolve, reject) => {
-    let imageToUpload;
-
     const form = new formidable.IncomingForm({
       keepExtensions: true,
     });
 
     form.parse(req, (err, fields, files) => {
-      // console.log(err, fields, files);
       if (err) reject(err);
       resolve({ fields, files });
     });
@@ -56,8 +54,34 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
     const fileName = result.files.image.newFilename;
     const rawData = fs.readFileSync(result.files.image.filepath);
 
+    // resize and compress image using Sharp before uploading
+    const metadata = await sharp(rawData).metadata();
+    let compressedImage = rawData;
+    if (!metadata) {
+      res.status(500).json({ message: 'File upload failed', error: 'Could not read image metadata' });
+      return;
+    }
+    console.log('metadata', metadata);
+
+    if ((metadata.width && metadata.width > 1000) || (metadata.height && metadata.height > 1000)) {
+      compressedImage = await sharp(rawData)
+        .resize(1000, 1000, {
+          fit: 'inside',
+        })
+        .toBuffer();
+    }
+
+    // Handle compression for different image formats
+    if (metadata.format === 'jpeg') {
+      compressedImage = await sharp(compressedImage).jpeg({ quality: 80 }).toBuffer();
+    } else if (metadata.format === 'png') {
+      compressedImage = await sharp(compressedImage).png({ quality: 80 }).toBuffer();
+    } else if (metadata.format === 'webp') {
+      compressedImage = await sharp(compressedImage).webp({ quality: 80 }).toBuffer();
+    }
+
     // upload the file to supabase storage
-    const { data, error } = await supabase.storage.from('user-uploads').upload(`${fileName}`, rawData, {
+    const { data, error } = await supabase.storage.from('user-uploads').upload(`${fileName}`, compressedImage, {
       contentType: result.files.image.mimetype,
       cacheControl: '3600',
       upsert: false,
