@@ -6,7 +6,6 @@ import debounce from 'lodash.debounce';
 import Dropzone from 'react-dropzone';
 import { useSession } from 'next-auth/react';
 // import { supabase } from '../../lib/supabase';
-import { createClient } from '@supabase/supabase-js';
 
 type Inputs = {
   brand: string;
@@ -30,6 +29,19 @@ enum Category {
   BAG = 'Bag',
 }
 
+const getColor = (props: any) => {
+  if (props.isDragAccept) {
+    return '#00e676';
+  }
+  if (props.isDragReject) {
+    return '#ff1744';
+  }
+  if (props.isFocused) {
+    return '#2196f3';
+  }
+  return '#eeeeee';
+};
+
 export default function NewItem() {
   const {
     register,
@@ -43,8 +55,6 @@ export default function NewItem() {
 
   //   console.log(watch('brand')); // watch input value by passing the name of it
 
-  const [brand, setBrand] = useState('');
-  const [model, setModel] = useState('');
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
@@ -177,49 +187,6 @@ export default function NewItem() {
             {/* </Row> */}
           </Container>
           <Container>
-            <Dropzone
-              accept={{ 'image/jpeg': ['.jpg', '.jpeg', '.png'] }}
-              // onDrop={(acceptedFiles) => {
-              //   console.log('acceptedFiles', acceptedFiles);
-              //   setFiles(acceptedFiles);
-              // }}
-              onDrop={
-                (acceptedFiles) => {
-                  console.log('acceptedFiles', acceptedFiles);
-                  setFiles(
-                    acceptedFiles.map((file) =>
-                      Object.assign(file, {
-                        preview: URL.createObjectURL(file),
-                      })
-                    )
-                  );
-                }
-                // handleImageUpload(acceptedFiles)
-              }
-            >
-              {({ getRootProps, getInputProps }) => (
-                <section>
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <p>Drag and drop some files here, or click to select files</p>
-                  </div>
-                </section>
-              )}
-            </Dropzone>
-
-            {files.map((file) => (
-              <div key={file.name}>
-                <div>
-                  <img
-                    src={file.preview}
-                    // Revoke data uri after image is loaded
-                    // onLoad={() => {
-                    //   URL.revokeObjectURL(file.preview);
-                    // }}
-                  />
-                </div>
-              </div>
-            ))}
             {/* display search results */}
             {searchResults && searchResults.length > 0 && (
               <Container css={{ p: '$0' }}>
@@ -229,12 +196,9 @@ export default function NewItem() {
                       onClick={(e) => {
                         e.preventDefault();
                         // set the template object to state so we can use it in the next step
-                        console.log('selectedTemplate', selectedTemplate);
                         setSelectedTemplate(result);
                         setSearchTerm('');
                         setSearchResults([]);
-                        console.log('clicked', result);
-                        console.log('state is now: ', selectedTemplate);
                       }}
                     >
                       {result.brand} {result.model}
@@ -249,20 +213,64 @@ export default function NewItem() {
             {selectedTemplate && selectedTemplate.id && (
               <>
                 <Container css={{ p: '$0', mt: '$15' }}>
-                  {/* <Dropzone onDrop={(acceptedFiles) => handleImageUpload(acceptedFiles)}>
-                    {({ getRootProps, getInputProps }) => (
-                      <section>
-                        <div {...getRootProps()}>
-                          <input {...getInputProps()} />
-                          <p>Drag and drop some files here, or click to select files</p>
-                        </div>
-                      </section>
-                    )}
-                  </Dropzone> */}
                   <Text h3>
                     {selectedTemplate.brand} {selectedTemplate.model},{' '}
                     {Category[selectedTemplate.category as keyof typeof Category]}
                   </Text>
+                  {files.map((file) => (
+                    <div key={file.name}>
+                      <div>
+                        <img
+                          src={file.preview}
+                          alt={`A picture of ${selectedTemplate.brand} ${selectedTemplate.model} `}
+                          // Revoke data uri after image is loaded
+                          // onLoad={() => {
+                          //   URL.revokeObjectURL(file.preview);
+                          // }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <Dropzone
+                    accept={{ 'image/jpeg': ['.jpg', '.jpeg', '.png'] }}
+                    onDrop={(acceptedFiles) => {
+                      console.log('acceptedFiles', acceptedFiles);
+                      setFiles(
+                        acceptedFiles.map((file) =>
+                          Object.assign(file, {
+                            preview: URL.createObjectURL(file),
+                          })
+                        )
+                      );
+                    }}
+                  >
+                    {({ getRootProps, getInputProps, isFocused, isDragAccept, isDragReject }) => (
+                      <section>
+                        <div
+                          {...getRootProps()}
+                          style={{
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            padding: '20px',
+                            borderWidth: 2,
+                            borderRadius: 2,
+                            borderColor: getColor({ isDragAccept, isDragReject, isFocused }),
+                            borderStyle: 'dashed',
+                            // backgroundColor: '#fafafa',
+                            color: '#bdbdbd',
+                            outline: 'none',
+                            transition: 'border .24s ease-in-out',
+                          }}
+                        >
+                          <input {...getInputProps()} />
+                          <p>Drag and drop or select an image for your item</p>
+                        </div>
+                      </section>
+                    )}
+                  </Dropzone>
+
                   {/* TODO: Add images, description etc. here after data is populated */}
                   {/* <pre>{JSON.stringify(selectedTemplate)}</pre> */}
                   <Spacer y={2} />
