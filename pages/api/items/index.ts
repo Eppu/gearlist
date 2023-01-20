@@ -16,7 +16,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     console.log(`Creating item for user ${session.user.id} using payload ${JSON.stringify(req.body)}`);
     const templateId = req.body.id;
     const authorId = session.user.id;
-    // return res.status(200).json({ message: 'Item creation not yet implemented' });
 
     // Create a new item record with the given templateId for the user
     await prisma.item
@@ -24,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         data: {
           templateId,
           authorId,
-          image: req.body.image || 'https://picsum.photos/200',
+          image: req.body.image || '/images/placeholder.jpg',
         },
       })
       .then((item) => {
