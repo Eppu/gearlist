@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Container, Row, Input, Spacer, Loading, Text, Card, Button } from '@nextui-org/react';
+import {
+  Container,
+  Row,
+  Input,
+  Spacer,
+  Loading,
+  Text,
+  Card,
+  Button,
+} from '@nextui-org/react';
 import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
 import Dropzone from 'react-dropzone';
@@ -82,7 +91,9 @@ export default function NewItem() {
       .then((res) => {
         if (!res.ok) {
           if (res.status === 401) {
-            setError('You are not authorized to access this resource. Try logging in again.');
+            setError(
+              'You are not authorized to access this resource. Try logging in again.'
+            );
           } else {
             setError('Something went wrong. Try again in a few minutes!');
           }
@@ -132,6 +143,7 @@ export default function NewItem() {
       }
       return res.json();
     });
+    // TODO: redirect to item page
     console.log('created a new item: ', data);
   };
 
@@ -139,7 +151,9 @@ export default function NewItem() {
 
   const handleImageUpload = async (acceptedFiles: any[]) => {
     if (!session || !session.supabaseAccessToken) {
-      setError('You are not authorized to access this resource. Try logging in again.');
+      setError(
+        'You are not authorized to access this resource. Try logging in again.'
+      );
       return;
     }
 
@@ -151,7 +165,9 @@ export default function NewItem() {
       body: formData,
     }).then((res) => {
       if (!res.ok) {
-        setError('Something went wrong while uploading your image. Try again in a few minutes!');
+        setError(
+          'Something went wrong while uploading your image. Try again in a few minutes!'
+        );
       }
       return res.json();
     });
@@ -179,11 +195,16 @@ export default function NewItem() {
                 debouncedSearchBrand(e.target.value);
               }}
             />
-            {(error || (searchResults && searchResults.length !== 0)) && <Spacer y={1} />}
-            {error && <p>{error}</p>}
-            {!isLoading && searchTerm && searchResults && searchResults.length === 0 && (
-              <p>No results found for {searchTerm}</p>
+            {(error || (searchResults && searchResults.length !== 0)) && (
+              <Spacer y={1} />
             )}
+            {error && <p>{error}</p>}
+            {!isLoading &&
+              searchTerm &&
+              searchResults &&
+              searchResults.length === 0 && (
+                <p>No results found for {searchTerm}</p>
+              )}
             {/* </Row> */}
           </Container>
           <Container>
@@ -191,7 +212,10 @@ export default function NewItem() {
             {searchResults && searchResults.length > 0 && (
               <Container css={{ p: '$0' }}>
                 {searchResults.map((result) => (
-                  <Row key={result.id} onClick={(e) => setSelectedTemplateId(result.id)}>
+                  <Row
+                    key={result.id}
+                    onClick={(e) => setSelectedTemplateId(result.id)}
+                  >
                     <a
                       onClick={(e) => {
                         e.preventDefault();
@@ -215,7 +239,11 @@ export default function NewItem() {
                 <Container css={{ p: '$0', mt: '$15' }}>
                   <Text h3>
                     {selectedTemplate.brand} {selectedTemplate.model},{' '}
-                    {Category[selectedTemplate.category as keyof typeof Category]}
+                    {
+                      Category[
+                        selectedTemplate.category as keyof typeof Category
+                      ]
+                    }
                   </Text>
                   {files.map((file) => (
                     <div key={file.name}>
@@ -244,7 +272,13 @@ export default function NewItem() {
                       );
                     }}
                   >
-                    {({ getRootProps, getInputProps, isFocused, isDragAccept, isDragReject }) => (
+                    {({
+                      getRootProps,
+                      getInputProps,
+                      isFocused,
+                      isDragAccept,
+                      isDragReject,
+                    }) => (
                       <section>
                         <div
                           {...getRootProps()}
@@ -256,7 +290,11 @@ export default function NewItem() {
                             padding: '20px',
                             borderWidth: 2,
                             borderRadius: 2,
-                            borderColor: getColor({ isDragAccept, isDragReject, isFocused }),
+                            borderColor: getColor({
+                              isDragAccept,
+                              isDragReject,
+                              isFocused,
+                            }),
                             borderStyle: 'dashed',
                             // backgroundColor: '#fafafa',
                             color: '#bdbdbd',
