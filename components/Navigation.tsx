@@ -8,13 +8,14 @@ import {
   Loading,
   NavbarToggleProps,
   NavbarLinkProps,
+  Input,
 } from '@nextui-org/react';
 import NextLink from 'next/link';
 
 import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Key, useState } from 'react';
-import { UserSquare, FilmStrip, Gear } from 'phosphor-react';
+import { UserSquare, FilmStrip, Gear, MagnifyingGlass } from 'phosphor-react';
 
 // function handleDropdownAction(action: Key) {
 //   if (action === 'signOut') {
@@ -53,9 +54,6 @@ export const Navigation = ({}) => {
   const collapseItems: NavItemProps[] = [
     { title: 'Home', path: '/' },
     // { title: 'Features', path: '/features' },
-    // { title: 'Customers', path: '#' },
-    // { title: 'Pricing', path: '#' },
-    // { title: 'Company', path: '#' },
   ];
 
   // Placeholder values
@@ -81,6 +79,7 @@ export const Navigation = ({}) => {
           showIn={'xs'}
         />
       )}
+
       <Navbar.Brand>
         <Text b color="inherit" hideIn={isValidSession ? 'xs' : undefined}>
           <NextLink href="/">Gearlist</NextLink>
@@ -98,6 +97,39 @@ export const Navigation = ({}) => {
                 </Navbar.Link>
               </NextLink>
             ))}
+
+            {/* Search bar */}
+            <Navbar.Item
+              css={{
+                '@xs': {
+                  w: '20em',
+                },
+                '@xsMax': {
+                  w: '100%',
+                  jc: 'center',
+                },
+              }}
+            >
+              <Input
+                clearable
+                contentLeft={<MagnifyingGlass size={16} />}
+                contentLeftStyling={false}
+                size="md"
+                // bordered
+                css={{
+                  w: '100%',
+                  '@xsMax': {
+                    mw: '100px',
+                  },
+                  '& .nextui-input-content--left': {
+                    h: '100%',
+                    ml: '$4',
+                    dflex: 'center',
+                  },
+                }}
+                placeholder="Search..."
+              />
+            </Navbar.Item>
           </Navbar.Content>
         )
       }
@@ -116,7 +148,7 @@ export const Navigation = ({}) => {
           <Navbar.Content
             css={{
               '@xs': {
-                w: '12%',
+                // w: '12%',
                 jc: 'flex-end',
               },
             }}
