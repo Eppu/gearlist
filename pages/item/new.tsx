@@ -1,19 +1,11 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import {
-  Container,
-  Row,
-  Input,
-  Spacer,
-  Loading,
-  Text,
-  Card,
-  Button,
-} from '@nextui-org/react';
+import { Container, Row, Input, Spacer, Loading, Text, Card, Button } from '@nextui-org/react';
 import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
 import Dropzone from 'react-dropzone';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
 // import { supabase } from '../../lib/supabase';
 
 type Inputs = {
@@ -62,6 +54,8 @@ export default function NewItem() {
 
   const { data: session, status } = useSession();
 
+  const router = useRouter();
+
   //   console.log(watch('brand')); // watch input value by passing the name of it
 
   const [error, setError] = useState('');
@@ -71,6 +65,7 @@ export default function NewItem() {
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [files, setFiles] = useState<any[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const searchBrand = async (brand: string) => {
     if (brand.length === 0) {
@@ -91,9 +86,7 @@ export default function NewItem() {
       .then((res) => {
         if (!res.ok) {
           if (res.status === 401) {
-            setError(
-              'You are not authorized to access this resource. Try logging in again.'
-            );
+            setError('You are not authorized to access this resource. Try logging in again.');
           } else {
             setError('Something went wrong. Try again in a few minutes!');
           }
@@ -118,17 +111,17 @@ export default function NewItem() {
   };
 
   const handleAddItem = async () => {
+    setIsUploading(true);
     if (!selectedTemplate) {
       setError('No template selected.');
+      setIsUploading(false);
       return;
     }
-    console.log('adding item', selectedTemplate);
 
     let image = '';
 
     if (files.length > 0) {
       image = await handleImageUpload(files);
-      console.log('got imageUrl: ', image);
     }
 
     const data = await fetch(`/api/items`, {
@@ -143,17 +136,24 @@ export default function NewItem() {
       }
       return res.json();
     });
-    // TODO: redirect to item page
+
+    if (!data) {
+      setIsUploading(false);
+      return;
+    }
+
     console.log('created a new item: ', data);
+
+    // Push to gear page
+    router.push('/');
+    // setIsUploading(false);
   };
 
   const debouncedSearchBrand = debounce(searchBrand, 500);
 
   const handleImageUpload = async (acceptedFiles: any[]) => {
     if (!session || !session.supabaseAccessToken) {
-      setError(
-        'You are not authorized to access this resource. Try logging in again.'
-      );
+      setError('You are not authorized to access this resource. Try logging in again.');
       return;
     }
 
@@ -165,9 +165,7 @@ export default function NewItem() {
       body: formData,
     }).then((res) => {
       if (!res.ok) {
-        setError(
-          'Something went wrong while uploading your image. Try again in a few minutes!'
-        );
+        setError('Something went wrong while uploading your image. Try again in a few minutes!');
       }
       return res.json();
     });
@@ -195,16 +193,11 @@ export default function NewItem() {
                 debouncedSearchBrand(e.target.value);
               }}
             />
-            {(error || (searchResults && searchResults.length !== 0)) && (
-              <Spacer y={1} />
-            )}
+            {(error || (searchResults && searchResults.length !== 0)) && <Spacer y={1} />}
             {error && <p>{error}</p>}
-            {!isLoading &&
-              searchTerm &&
-              searchResults &&
-              searchResults.length === 0 && (
-                <p>No results found for {searchTerm}</p>
-              )}
+            {!isLoading && searchTerm && searchResults && searchResults.length === 0 && (
+              <p>No results found for {searchTerm}</p>
+            )}
             {/* </Row> */}
           </Container>
           <Container>
@@ -212,10 +205,7 @@ export default function NewItem() {
             {searchResults && searchResults.length > 0 && (
               <Container css={{ p: '$0' }}>
                 {searchResults.map((result) => (
-                  <Row
-                    key={result.id}
-                    onClick={(e) => setSelectedTemplateId(result.id)}
-                  >
+                  <Row key={result.id} onClick={(e) => setSelectedTemplateId(result.id)}>
                     <a
                       onClick={(e) => {
                         e.preventDefault();
@@ -239,11 +229,7 @@ export default function NewItem() {
                 <Container css={{ p: '$0', mt: '$15' }}>
                   <Text h3>
                     {selectedTemplate.brand} {selectedTemplate.model},{' '}
-                    {
-                      Category[
-                        selectedTemplate.category as keyof typeof Category
-                      ]
-                    }
+                    {Category[selectedTemplate.category as keyof typeof Category]}
                   </Text>
                   {files.map((file) => (
                     <div key={file.name}>
@@ -272,13 +258,7 @@ export default function NewItem() {
                       );
                     }}
                   >
-                    {({
-                      getRootProps,
-                      getInputProps,
-                      isFocused,
-                      isDragAccept,
-                      isDragReject,
-                    }) => (
+                    {({ getRootProps, getInputProps, isFocused, isDragAccept, isDragReject }) => (
                       <section>
                         <div
                           {...getRootProps()}
@@ -321,7 +301,9 @@ export default function NewItem() {
                   alignItems="center"
                   css={{ p: '$5' }}
                 >
-                  <Button onClick={handleAddItem}>Add to my items</Button>
+                  <Button onClick={handleAddItem} disabled={isUploading}>
+                    {isUploading ? <Loading size="xs" /> : 'Add to my items'}
+                  </Button>
                 </Container>
               </>
             )}
