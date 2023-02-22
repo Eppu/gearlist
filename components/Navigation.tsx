@@ -6,16 +6,14 @@ import {
   Avatar,
   Dropdown,
   Loading,
-  NavbarToggleProps,
-  NavbarLinkProps,
-  Input,
 } from '@nextui-org/react';
-import NextLink from 'next/link';
 
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { Key, useState } from 'react';
 import { UserSquare, FilmStrip, Gear, MagnifyingGlass } from 'phosphor-react';
+import SearchBar from './SearchBar';
 
 // function handleDropdownAction(action: Key) {
 //   if (action === 'signOut') {
@@ -110,25 +108,7 @@ export const Navigation = ({}) => {
                 },
               }}
             >
-              <Input
-                clearable
-                contentLeft={<MagnifyingGlass size={16} />}
-                contentLeftStyling={false}
-                size="md"
-                // bordered
-                css={{
-                  w: '100%',
-                  '@xsMax': {
-                    mw: '100px',
-                  },
-                  '& .nextui-input-content--left': {
-                    h: '100%',
-                    ml: '$4',
-                    dflex: 'center',
-                  },
-                }}
-                placeholder="Search..."
-              />
+              <SearchBar />
             </Navbar.Item>
           </Navbar.Content>
         )
@@ -137,8 +117,18 @@ export const Navigation = ({}) => {
       {!session && (
         <Navbar.Content>
           <Navbar.Item>
-            <Button auto flat disabled={isLoading} as={Link} onClick={() => signIn()}>
-              {isLoading ? <Loading color="currentColor" size="sm" /> : 'Sign In'}
+            <Button
+              auto
+              flat
+              disabled={isLoading}
+              as={Link}
+              onClick={() => signIn()}
+            >
+              {isLoading ? (
+                <Loading color="currentColor" size="sm" />
+              ) : (
+                'Sign In'
+              )}
             </Button>
           </Navbar.Item>
         </Navbar.Content>
@@ -168,7 +158,9 @@ export const Navigation = ({}) => {
               <Dropdown.Menu
                 aria-label="User menu actions"
                 color="secondary"
-                disabledKeys={isValidSession ? [] : ['profile', 'collections', 'settings']}
+                disabledKeys={
+                  isValidSession ? [] : ['profile', 'collections', 'settings']
+                }
                 // Declaring onAction actions here for now until I can figure out how to pass the session to the handler properly
                 onAction={(actionKey) => {
                   console.log(actionKey);
@@ -192,11 +184,19 @@ export const Navigation = ({}) => {
                     @{session.user.username || '...'}
                   </Text>
                 </Dropdown.Item>
-                <Dropdown.Item key="collections" withDivider icon={<FilmStrip size={24} weight="light" />}>
+                <Dropdown.Item
+                  key="collections"
+                  withDivider
+                  icon={<FilmStrip size={24} weight="light" />}
+                >
                   My Collections
                 </Dropdown.Item>
                 {/* <Dropdown.Item key="team_settings">Team Settings</Dropdown.Item> */}
-                <Dropdown.Item key="settings" withDivider icon={<Gear size={24} weight="light" />}>
+                <Dropdown.Item
+                  key="settings"
+                  withDivider
+                  icon={<Gear size={24} weight="light" />}
+                >
                   Settings
                 </Dropdown.Item>
 
