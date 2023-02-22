@@ -112,6 +112,7 @@ export default function ItemTemplatePage({
                 src={
                   itemTemplate.imageUrl || 'https://via.placeholder.com/350x250'
                 }
+                style={{ borderRadius: '10px' }}
               />
             </Col>
             <Col>
