@@ -16,5 +16,5 @@ export const supabase = createClient(
         // Authorization: `Bearer ${session.supabaseAccessToken}`,
       },
     },
-  }
+  },
 );

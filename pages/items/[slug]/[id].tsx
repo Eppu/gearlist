@@ -3,17 +3,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Layout } from '../../../components/Layout';
 import Head from 'next/head';
-import {
-  Container,
-  Grid,
-  Text,
-  Spacer,
-  Link,
-  Row,
-  Card,
-  Col,
-  Image,
-} from '@nextui-org/react';
+import { Container, Grid, Text, Spacer, Link, Row, Card, Col, Image } from '@nextui-org/react';
 import { GetStaticPropsResult } from 'next';
 import { Item } from '@prisma/client';
 
@@ -34,9 +24,7 @@ export async function getStaticPaths() {
   // create paths by combining brand and model followed by id for each item template
   const paths = itemTemplates.map((itemTemplate) => ({
     params: {
-      slug: `${itemTemplate.brand}-${itemTemplate.model}`
-        .replace(/\s+/g, '-')
-        .toLowerCase(),
+      slug: `${itemTemplate.brand}-${itemTemplate.model}`.replace(/\s+/g, '-').toLowerCase(),
       id: itemTemplate.id.toString(),
     },
   }));
@@ -46,9 +34,7 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps(
-  context: any
-): Promise<GetStaticPropsResult<any>> {
+export async function getStaticProps(context: any): Promise<GetStaticPropsResult<any>> {
   const itemTemplateId = Number(context.params.id);
   const itemTemplate = await prisma.itemTemplate.findUnique({
     where: {
@@ -72,11 +58,7 @@ export async function getStaticProps(
   };
 }
 
-export default function ItemTemplatePage({
-  itemTemplate,
-}: {
-  itemTemplate: ItemTemplate;
-}) {
+export default function ItemTemplatePage({ itemTemplate }: { itemTemplate: ItemTemplate }) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -109,9 +91,7 @@ export default function ItemTemplatePage({
               <Image
                 width={350}
                 height={250}
-                src={
-                  itemTemplate.imageUrl || 'https://via.placeholder.com/350x250'
-                }
+                src={itemTemplate.imageUrl || 'https://via.placeholder.com/350x250'}
                 style={{ borderRadius: '10px' }}
               />
             </Col>
@@ -130,12 +110,7 @@ export default function ItemTemplatePage({
               <Card variant="bordered">
                 <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
                   <Col>
-                    <Text
-                      size={12}
-                      weight="bold"
-                      transform="uppercase"
-                      color="#ffffffAA"
-                    >
+                    <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
                       {itemTemplate.brand} {itemTemplate.model}
                     </Text>
                     <Text h4 color="white">
@@ -143,12 +118,7 @@ export default function ItemTemplatePage({
                     </Text>
                   </Col>
                 </Card.Header>
-                <Card.Image
-                  src={item.image as string}
-                  objectFit="cover"
-                  width="100%"
-                  height="auto"
-                />
+                <Card.Image src={item.image as string} objectFit="cover" width="100%" height="auto" />
               </Card>
             </Grid>
           ))}

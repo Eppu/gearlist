@@ -1,7 +1,9 @@
 # Gearlist
 
 ---
+
 ### 🚧 IMPORTANT NOTICE 🚧
+
 <br>
 Gearlist is currently in active development, and commits to the main branch will most likely include breaking changes. Please proceed with caution.
 The API structure is still under work too, so the endpoints will change in the future.
@@ -9,8 +11,6 @@ The API structure is still under work too, so the endpoints will change in the f
 ---
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-
 
 Gearlist uses [Phosphor Icons](https://phosphoricons.com/).
 
