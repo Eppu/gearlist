@@ -69,7 +69,7 @@ export default function SearchBar() {
             position: 'absolute',
             top: '100%',
             pt: '$4',
-            pb: '$4',
+            pb: '$6',
             left: 0,
             right: 0,
             bg: '$background',
@@ -86,6 +86,9 @@ export default function SearchBar() {
               css={{
                 p: '$6',
                 // if not last item add border bottom
+                '&:first-child': {
+                  boxSizing: 'border-box',
+                },
                 '&:not(:last-child)': {
                   borderBottom: '1px solid $border',
                 },
