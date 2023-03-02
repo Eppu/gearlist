@@ -9,7 +9,7 @@
     "lint": "next lint",
     "prebuild": "prisma generate",
     "prepare": "husky install",
-    "prettier": "prettier ./**/*.{js,ts,tsx,css,md,json} --config ./.prettierrc --write"
+    "prettier": "prettier ./**/*.{js,ts,tsx,md,json} --config ./.prettierrc --write"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
