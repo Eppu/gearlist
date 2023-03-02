@@ -1,48 +1,10 @@
-import { prisma } from '../lib/prisma';
 import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
-import LoginButton from '../components/loginButton';
-import { useSession, getSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { Item } from '@prisma/client';
-import { GetServerSideProps } from 'next';
 import { Loading, Container } from '@nextui-org/react';
-
 import { Layout } from '../components/Layout';
-import HeroComponents from '../components/HeroComponents';
-
 import { SignedOutView } from '../components/SignedOutView';
 import { SignedInView } from '../components/SignedInView';
-
-async function testCreateUser(name: string, email: string) {
-  const response = await fetch('/api/createUser', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ name, email }),
-  });
-  const data = await response.json();
-  console.log(data);
-}
-
-async function searchItemTemplates() {
-  const response = await fetch('/api/search', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ query: 'leica' }),
-  });
-  const data = await response.json();
-  console.log(data);
-}
-
-async function getItemsByUser() {
-  const response = await fetch(`/api/test`);
-  const data = await response.json();
-  console.log(data);
-}
 
 function Home({ items }: { items: Item[] }) {
   const { data: session, status } = useSession();
@@ -79,35 +41,5 @@ function Home({ items }: { items: Item[] }) {
     </Layout>
   );
 }
-
-// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
-//   const session = await getSession({ req });
-
-//   if (!session) {
-//     res.statusCode = 403;
-//     return { props: { items: [] } };
-//   }
-//   const items = await prisma.item.findMany({
-//     where: {
-//       authorId: session.user.id,
-//     },
-//   });
-
-//   const cleanedItems = items.map((item) => ({
-//     ...item,
-//     createdAt: item.createdAt.toISOString(),
-//     updatedAt: item.updatedAt.toISOString(),
-//   }));
-
-//   console.log(cleanedItems);
-
-//   res.statusCode = 200;
-//   return {
-//     props: {
-//       message: 'hello',
-//       items: cleanedItems,
-//     },
-//   };
-// };
 
 export default Home;
