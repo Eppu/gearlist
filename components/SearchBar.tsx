@@ -11,6 +11,10 @@ export default function SearchBar() {
 
   const router = useRouter();
 
+  router.events.on('routeChangeComplete', () => {
+    setIsResultsOpen(false);
+  });
+
   const search = async (query: string) => {
     console.log(query);
     if (query.length < 3) {
@@ -64,6 +68,12 @@ export default function SearchBar() {
         clearable
         contentLeft={<MagnifyingGlass size={16} />}
         contentLeftStyling={false}
+        onFocus={() => {
+          setIsResultsOpen(true);
+        }}
+        onBlur={() => {
+          setIsResultsOpen(false);
+        }}
         size="md"
         // bordered
         css={{
