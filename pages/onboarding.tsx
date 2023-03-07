@@ -38,7 +38,7 @@ export default function Onboarding() {
 
   const updateUser = async (username: string) => {
     setIsSubmitting(true);
-    const res = await fetch('/api/updateUser', {
+    const res = await fetch('/api/user/update', {
       // include id and username in body
       body: JSON.stringify({ username, id: session?.user.id }),
       headers: {
@@ -76,7 +76,7 @@ export default function Onboarding() {
         justify="center"
         alignContent="center"
         alignItems="center"
-        css={{ flexDirection: 'column' }}
+        css={{ flexDirection: 'column', padding: '$10 $10' }}
         sm
       >
         <Text h1>Welcome to Gearlist!</Text>
@@ -84,7 +84,7 @@ export default function Onboarding() {
       </Container>
       <Spacer y={5} />
       <Container display="flex" justify="center" alignContent="center" sm>
-        <Row justify="center" css={{ marginTop: '$20' }}>
+        <Row justify="center" css={{ marginTop: '$10' }}>
           <Input
             readOnly={isSubmitting}
             clearable
@@ -100,7 +100,6 @@ export default function Onboarding() {
             required
             status={isAvailable ? 'success' : 'default'}
             onChange={(e) => {
-              console.log('e', e.target.value);
               e.target.value = e.target.value.toLowerCase();
               debouncedCheckUsernameAvailability(e.target.value);
             }}

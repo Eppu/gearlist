@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { PrismaClient } from '@prisma/client';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '../../../lib/prisma';
 
 export interface UpdateUserPayload {
   username?: string;
@@ -11,18 +10,28 @@ export interface UpdateUserPayload {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   // update user based on information in the payload. only the user with the same id as the payload can update their own information
-  // if the user has no profile created, create a profile for them
   if (req.method === 'PUT') {
     const id = req.body.id;
     const updatePayload: UpdateUserPayload = req.body;
 
-    const profile = await prisma.user.findUnique({
+    // If no ID is provided, return an error
+    if (!id) {
+      res.status(400).json({ error: 'No ID provided' });
+      return;
+    }
+
+    const existingUser = await prisma.user.findUnique({
       where: {
         id: id,
       },
+      include: {
+        profile: true,
+      },
     });
 
-    if (!profile) {
+    // if the user has no profile created, create a profile for them
+    if (existingUser?.profile === null) {
+      console.log(`Creating user profile for user ${id}`);
       await prisma.profile.create({
         data: {
           user: {
@@ -43,14 +52,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           username: updatePayload?.username,
           name: updatePayload?.name,
           image: updatePayload?.image,
+          // also update profile bio if it exists
           profile: {
             update: {
               bio: updatePayload?.bio,
             },
           },
         },
+        include: {
+          profile: true,
+        },
       })
-
       .then((user) => {
         res.status(200).json({ user: user });
       })
