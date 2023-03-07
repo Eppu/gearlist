@@ -4,17 +4,7 @@ import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import NextLink from 'next/link';
 import { prisma } from '../../lib/prisma';
-import {
-  Container,
-  Row,
-  Col,
-  Text,
-  Avatar,
-  User,
-  Grid,
-  Spacer,
-  Link,
-} from '@nextui-org/react';
+import { Container, Row, Col, Text, Avatar, User, Grid, Spacer, Link } from '@nextui-org/react';
 import { Gear } from 'phosphor-react';
 
 export interface User {
@@ -61,7 +51,10 @@ export default function UserPage({ user, items }: { user: User; items: any }) {
             <Avatar
               src={user.image}
               alt="Profile picture"
-              css={{ size: '$20' }}
+              css={{
+                size: '$20',
+              }}
+              color="primary"
             />
           </Grid>
           <Grid justify="center">
