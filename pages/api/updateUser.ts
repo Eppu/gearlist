@@ -6,13 +6,34 @@ export interface UpdateUserPayload {
   username?: string;
   name?: string;
   image?: string;
+  bio?: string;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   // update user based on information in the payload. only the user with the same id as the payload can update their own information
+  // if the user has no profile created, create a profile for them
   if (req.method === 'PUT') {
     const id = req.body.id;
     const updatePayload: UpdateUserPayload = req.body;
+
+    const profile = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!profile) {
+      await prisma.profile.create({
+        data: {
+          user: {
+            connect: {
+              id: id,
+            },
+          },
+        },
+      });
+    }
+
     const user = await prisma.user
       .update({
         where: {
@@ -22,8 +43,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           username: updatePayload?.username,
           name: updatePayload?.name,
           image: updatePayload?.image,
+          profile: {
+            update: {
+              bio: updatePayload?.bio,
+            },
+          },
         },
       })
+
       .then((user) => {
         res.status(200).json({ user: user });
       })
