@@ -4,8 +4,9 @@ import { useRouter } from 'next/router';
 import { GetServerSideProps } from 'next';
 import NextLink from 'next/link';
 import { prisma } from '../../lib/prisma';
-import { Container, Row, Col, Text, Avatar, User, Grid, Spacer, Link } from '@nextui-org/react';
+import { Container, Row, Col, Text, Avatar, User, Grid, Spacer, Link, Card } from '@nextui-org/react';
 import { Gear } from 'phosphor-react';
+import { Item, Profile } from '@prisma/client';
 
 export interface User {
   id: string;
@@ -15,6 +16,8 @@ export interface User {
   updatedAt?: Date;
   emailVerified?: Date | null;
   image?: string | undefined;
+  profile?: Profile | undefined;
+  items?: Item[];
 }
 
 export default function UserPage({ user, items }: { user: User; items: any }) {
@@ -46,31 +49,71 @@ export default function UserPage({ user, items }: { user: User; items: any }) {
   return (
     <Layout>
       <Container sm css={{ padding: '$10 $7' }}>
-        <Grid.Container gap={2} alignItems="center">
-          <Grid justify="center" alignItems="center">
-            <Avatar
-              src={user.image}
-              alt="Profile picture"
-              css={{
-                size: '$20',
-              }}
-              color="primary"
-            />
-          </Grid>
-          <Grid justify="center">
-            <Text h1>@{user.username}</Text>
-          </Grid>
-          {session && session.user.id === user.id && (
-            <Grid justify="center" alignItems="center" alignContent="center">
-              <NextLink href="/settings">
-                <Link color="inherit">
-                  <Gear size={28} weight="light" />
-                  {/* <a>Edit profile</a> */}
-                </Link>
-              </NextLink>
+        <Card css={{ padding: '$5 $10' }}>
+          <Row align="center" css={{ padding: '$5 $0' }}>
+            <div>
+              <Avatar
+                src={user.image}
+                alt="Profile picture"
+                css={{
+                  size: '$20',
+                }}
+                color="primary"
+              />
+            </div>
+
+            <Spacer x={2} />
+
+            <Col>
+              <Row align="center">
+                <Text h1>@{user.username}</Text>
+                {session && session.user.id === user.id && (
+                  <>
+                    <Spacer x={0.5} />
+
+                    <NextLink href="/settings">
+                      <Link color="inherit">
+                        <Gear size={28} weight="light" />
+                      </Link>
+                    </NextLink>
+                  </>
+                )}
+              </Row>
+              <Text>{user.profile?.bio}</Text>
+            </Col>
+          </Row>
+
+          {/* REMOVE WHEN DONE WITH REFACTOR  */}
+          {/* </Grid.Container> */}
+          {/* <Grid.Container gap={2} alignItems="center">
+            <Grid justify="center" alignItems="center" css={{ height: '100%' }}>
+              <Avatar
+                src={user.image}
+                alt="Profile picture"
+                css={{
+                  size: '$20',
+                }}
+                color="primary"
+              />
             </Grid>
-          )}
-        </Grid.Container>
+            <Grid justify="center">
+              <Text h1>@{user.username}</Text>
+            </Grid>
+            {session && session.user.id === user.id && (
+              <Grid justify="center" alignItems="center" alignContent="center">
+                <NextLink href="/settings">
+                  <Link color="inherit">
+                    <Gear size={28} weight="light" />
+                  </Link>
+                </NextLink>
+              </Grid>
+            )}
+            <Grid sm={12}>
+              <Text>{user.profile?.bio}</Text>
+            </Grid>
+          </Grid.Container> */}
+          {/* REMOVE WHEN DONE WITH REFACTOR  */}
+        </Card>
       </Container>
     </Layout>
   );
@@ -81,6 +124,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const user = await prisma.user.findUnique({
     where: {
       username: username as string,
+    },
+    include: {
+      items: true,
+      profile: true,
     },
   });
 
