@@ -6,7 +6,7 @@ import NextLink from 'next/link';
 import { prisma } from '../../lib/prisma';
 import { Container, Row, Col, Text, Avatar, User, Grid, Spacer, Link, Card } from '@nextui-org/react';
 import { Gear } from 'phosphor-react';
-import { Item, Profile } from '@prisma/client';
+import { Item, Profile, Category } from '@prisma/client';
 
 export interface User {
   id: string;
@@ -23,6 +23,12 @@ export interface User {
 export default function UserPage({ user, items }: { user: User; items: any }) {
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  const cameras = items.items.filter((item: any) => item.template?.category === Category.CAMERA);
+  const lenses = items.items.filter((item: any) => item.template?.category === Category.LENS);
+  const others = items.items.filter(
+    (item: any) => item.template?.category === Category.ACCESSORY || item.template?.category === Category.BAG,
+  );
 
   if (!user) {
     return (
@@ -80,6 +86,13 @@ export default function UserPage({ user, items }: { user: User; items: any }) {
                 )}
               </Row>
               <Text>{user.profile?.bio}</Text>
+              <Row>
+                <Text>Cameras: {cameras.length}</Text>
+                <Spacer x={0.5} />
+                <Text>Lenses: {lenses.length}</Text>
+                <Spacer x={0.5} />
+                <Text>Others: {others.length}</Text>
+              </Row>
             </Col>
           </Row>
 
@@ -126,7 +139,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       username: username as string,
     },
     include: {
-      items: true,
+      items: {
+        include: {
+          template: true,
+        },
+      },
       profile: true,
     },
   });
@@ -141,9 +158,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const { createdAt, email, ...userData } = user;
 
+  const items = {
+    items: user.items,
+  };
+
   return {
     props: {
       user: userData,
+      items,
     },
   };
 };
