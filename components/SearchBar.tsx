@@ -2,10 +2,18 @@ import { Input, Loading, Container, Link } from '@nextui-org/react';
 import { MagnifyingGlass } from 'phosphor-react';
 import debounce from 'lodash.debounce';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function SearchBar() {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<any[]>([]);
+  const [isResultsOpen, setIsResultsOpen] = useState(false);
+
+  const router = useRouter();
+
+  router.events.on('routeChangeComplete', () => {
+    setIsResultsOpen(false);
+  });
 
   const search = async (query: string) => {
     console.log(query);
@@ -24,14 +32,34 @@ export default function SearchBar() {
     });
     const data = await res.json();
     console.log(data);
-    setResults(data.items);
+
+    if (data.items && data.items.length > 0) {
+      setResults(data.items);
+      setIsResultsOpen(true);
+    } else {
+      setResults([]);
+      setIsResultsOpen(false);
+    }
+
     setIsLoading(false);
   };
 
   const debouncedSearch = debounce(search, 500);
 
   const createSlug = (item: any) => {
-    return `${item.brand}-${item.model}`.replace(/\s+/g, '-').toLowerCase();
+    return (
+      `${item.brand}-${item.model}`
+        .replace(/\s+/g, '-')
+        // replace / with empty string
+        .replace(/\//g, '')
+        .toLowerCase()
+    );
+  };
+
+  const handleLinkClick = (item: any) => {
+    return () => {
+      router.push(`/items/${createSlug(item)}/${item.id}`);
+    };
   };
 
   return (
@@ -40,6 +68,12 @@ export default function SearchBar() {
         clearable
         contentLeft={<MagnifyingGlass size={16} />}
         contentLeftStyling={false}
+        onFocus={() => {
+          setIsResultsOpen(true);
+        }}
+        onBlur={() => {
+          setIsResultsOpen(false);
+        }}
         size="md"
         // bordered
         css={{
@@ -63,7 +97,7 @@ export default function SearchBar() {
           setResults([]);
         }}
       />
-      {results.length > 0 && (
+      {results.length > 0 && isResultsOpen && (
         <Container
           css={{
             position: 'absolute',
@@ -94,7 +128,7 @@ export default function SearchBar() {
                 },
               }}
             >
-              <Link href={`/items/${createSlug(result)}/${result.id}`}>
+              <Link onClick={handleLinkClick(result)}>
                 {result.brand} {result.model}
               </Link>
             </Container>

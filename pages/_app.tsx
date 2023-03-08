@@ -7,6 +7,7 @@ import { Session } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import ProgressBar from '../components/ProgressBar';
 
 const lightTheme = createTheme({
   type: 'light',
@@ -43,6 +44,7 @@ export default function App({ Component, pageProps }: AppProps<{ session: Sessio
           dark: darkTheme.className,
         }}
       >
+        <ProgressBar />
         <NextUIProvider>
           <Navigation />
           {

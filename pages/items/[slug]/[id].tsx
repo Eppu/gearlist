@@ -24,7 +24,7 @@ export async function getStaticPaths() {
   // create paths by combining brand and model followed by id for each item template
   const paths = itemTemplates.map((itemTemplate) => ({
     params: {
-      slug: `${itemTemplate.brand}-${itemTemplate.model}`.replace(/\s+/g, '-').toLowerCase(),
+      slug: `${itemTemplate.brand}-${itemTemplate.model}`.replace(/\s+/g, '-').replace(/\//g, '').toLowerCase(),
       id: itemTemplate.id.toString(),
     },
   }));
