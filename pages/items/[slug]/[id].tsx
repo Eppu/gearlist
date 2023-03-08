@@ -73,7 +73,7 @@ export default function ItemTemplatePage({ itemTemplate }: { itemTemplate: ItemT
   return (
     <Layout>
       <Head>
-        <title>{`Gearlist | ${itemTemplate.brand} ${itemTemplate.model}`}</title>
+        <title>{`${itemTemplate.brand} ${itemTemplate.model} – Gearlist`}</title>
       </Head>
       {/* <Container xl css={{ padding: '$10 $7' }}> */}
 
