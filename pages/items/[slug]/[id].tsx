@@ -91,6 +91,7 @@ export default function ItemTemplatePage({ itemTemplate }: { itemTemplate: ItemT
               <Image
                 width={350}
                 height={250}
+                alt={`A(n) ${itemTemplate.brand} ${itemTemplate.model}`}
                 src={itemTemplate.imageUrl || 'https://via.placeholder.com/350x250'}
                 style={{ borderRadius: '10px' }}
               />
