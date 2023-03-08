@@ -12,7 +12,6 @@ NProgress.configure({
 
 export default function ProgressBar() {
   const router = useRouter();
-  // set progress bar color to match theme
 
   useEffect(() => {
     Router.events.on('routeChangeStart', NProgress.start);
