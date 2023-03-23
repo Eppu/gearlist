@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Container, Row, Input, Spacer, Loading, Text, Card, Button } from '@nextui-org/react';
+import { Container, Row, Input, Spacer, Loading, Text, Card, Button, Image } from '@nextui-org/react';
 import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
 import Dropzone from 'react-dropzone';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { Trash } from 'phosphor-react';
 // import { supabase } from '../../lib/supabase';
 
 type Inputs = {
@@ -175,13 +176,19 @@ export default function NewItem() {
 
   return (
     <Layout>
-      <Container css={{ mt: '$20' }}>
+      <Container
+        css={{
+          mt: '$10',
+          pl: '$0',
+          pr: '$0',
+          '@xsMax': {
+            p: '$5',
+          },
+        }}
+      >
         <Text h1>Add gear</Text>
         <Card css={{ p: '$16 0' }}>
-          <Container
-          // css={{ p: '$15 $10' }}
-          >
-            {/* register your input into the hook by invoking the "register" function */}
+          <Container>
             <Input
               clearable
               bordered
@@ -233,58 +240,80 @@ export default function NewItem() {
                   </Text>
                   {files.map((file) => (
                     <div key={file.name}>
-                      <div>
-                        <img
-                          src={file.preview}
-                          alt={`A picture of ${selectedTemplate.brand} ${selectedTemplate.model} `}
-                          // Revoke data uri after image is loaded
-                          // onLoad={() => {
-                          //   URL.revokeObjectURL(file.preview);
-                          // }}
-                        />
-                      </div>
+                      {/* <div> */}
+                      <Image
+                        width={400}
+                        objectFit="cover"
+                        height={300}
+                        src={file.preview}
+                        css={{ borderRadius: '$md', overflow: 'hidden' }}
+                        alt={`A preview picture of ${selectedTemplate.brand} ${selectedTemplate.model}`}
+                        // Revoke data uri after image is loaded
+                        // onLoad={() => {
+                        //   URL.revokeObjectURL(file.preview);
+                        // }}
+                      />
+                      {/* </div> */}
                     </div>
                   ))}
                   <Dropzone
                     accept={{ 'image/jpeg': ['.jpg', '.jpeg', '.png'] }}
+                    multiple={false}
+                    disabled={files.length > 0}
                     onDrop={(acceptedFiles) => {
                       console.log('acceptedFiles', acceptedFiles);
                       setFiles(
                         acceptedFiles.map((file) =>
                           Object.assign(file, {
                             preview: URL.createObjectURL(file),
-                          })
-                        )
+                          }),
+                        ),
                       );
                     }}
                   >
                     {({ getRootProps, getInputProps, isFocused, isDragAccept, isDragReject }) => (
                       <section>
-                        <div
-                          {...getRootProps()}
-                          style={{
-                            flex: 1,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            padding: '20px',
-                            borderWidth: 2,
-                            borderRadius: 2,
-                            borderColor: getColor({
-                              isDragAccept,
-                              isDragReject,
-                              isFocused,
-                            }),
-                            borderStyle: 'dashed',
-                            // backgroundColor: '#fafafa',
-                            color: '#bdbdbd',
-                            outline: 'none',
-                            transition: 'border .24s ease-in-out',
-                          }}
-                        >
-                          <input {...getInputProps()} />
-                          <p>Drag and drop or select an image for your item</p>
-                        </div>
+                        {files.length > 0 && (
+                          <Row justify="center" align="center" css={{ p: '$5' }}>
+                            <Button
+                              size={'sm'}
+                              rounded
+                              ghost
+                              color="error"
+                              icon={<Trash size={20} />}
+                              onPress={() => {
+                                setFiles([]);
+                              }}
+                            ></Button>
+                          </Row>
+                        )}
+                        {files.length === 0 && (
+                          <div
+                            {...getRootProps()}
+                            style={{
+                              flex: 1,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              padding: '20px',
+                              borderWidth: 2,
+                              borderRadius: 2,
+                              borderColor: getColor({
+                                isDragAccept,
+                                isDragReject,
+                                isFocused,
+                              }),
+                              borderStyle: 'dashed',
+                              // backgroundColor: '#fafafa',
+                              color: '#bdbdbd',
+                              outline: 'none',
+                              transition: 'border .24s ease-in-out',
+                            }}
+                          >
+                            <input {...getInputProps()} />
+                            <p>Drag and drop or select an image for your item</p>
+                          </div>
+                        )}
                       </section>
                     )}
                   </Dropzone>
@@ -301,7 +330,7 @@ export default function NewItem() {
                   alignItems="center"
                   css={{ p: '$5' }}
                 >
-                  <Button onClick={handleAddItem} disabled={isUploading}>
+                  <Button onPress={handleAddItem} disabled={isUploading}>
                     {isUploading ? <Loading size="xs" /> : 'Add to my items'}
                   </Button>
                 </Container>
