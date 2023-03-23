@@ -42,7 +42,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
     });
   });
 
-  promise.then(async (result) => {
+  return promise.then(async (result) => {
     const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
       global: {
         headers: {
