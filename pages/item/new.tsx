@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { Container, Row, Input, Spacer, Loading, Text, Card, Button, Image } from '@nextui-org/react';
+import { Container, Row, Input, Spacer, Loading, Text, Card, Button, Image, Col } from '@nextui-org/react';
 import { Layout } from '../../components/Layout';
 import debounce from 'lodash.debounce';
 import Dropzone from 'react-dropzone';
@@ -238,22 +238,23 @@ export default function NewItem() {
                     {selectedTemplate.brand} {selectedTemplate.model},{' '}
                     {Category[selectedTemplate.category as keyof typeof Category]}
                   </Text>
+                  {/* <Spacer y={1} /> */}
+                  {/* TODO: Add extra info here */}
+
                   {files.map((file) => (
                     <div key={file.name}>
-                      {/* <div> */}
                       <Image
                         width={400}
                         objectFit="cover"
                         height={300}
                         src={file.preview}
-                        css={{ borderRadius: '$md', overflow: 'hidden' }}
+                        css={{ borderRadius: '$md', overflow: 'hidden', bs: '$md' }}
                         alt={`A preview picture of ${selectedTemplate.brand} ${selectedTemplate.model}`}
                         // Revoke data uri after image is loaded
                         // onLoad={() => {
                         //   URL.revokeObjectURL(file.preview);
                         // }}
                       />
-                      {/* </div> */}
                     </div>
                   ))}
                   <Dropzone
