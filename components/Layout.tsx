@@ -14,9 +14,9 @@ export const Layout = ({ children }: React.PropsWithChildren<{}>) => (
           position: 'relative',
           // pt: '$$notifyBannerHeight', // only when the notify banner is visible
           // minHeight: '100vh',
-          '@mdMax': {
-            overflowX: 'hidden',
-          },
+          // '@mdMax': {
+          //   overflowX: 'hidden',
+          // },
           paddingLeft: '0',
           paddingRight: '0',
         }}
