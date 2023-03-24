@@ -242,20 +242,24 @@ export default function NewItem() {
                   {/* TODO: Add extra info here */}
 
                   {files.map((file) => (
-                    <div key={file.name}>
+                    <Row key={file.name}>
                       <Image
-                        width={400}
                         objectFit="cover"
-                        height={300}
                         src={file.preview}
-                        css={{ borderRadius: '$md', overflow: 'hidden', bs: '$md' }}
+                        css={{
+                          m: '$5',
+                          maxWidth: '400px',
+                          borderRadius: '$md',
+                          overflow: 'hidden',
+                          bs: '$sm',
+                        }}
                         alt={`A preview picture of ${selectedTemplate.brand} ${selectedTemplate.model}`}
                         // Revoke data uri after image is loaded
                         // onLoad={() => {
                         //   URL.revokeObjectURL(file.preview);
                         // }}
                       />
-                    </div>
+                    </Row>
                   ))}
                   <Dropzone
                     accept={{ 'image/jpeg': ['.jpg', '.jpeg', '.png'] }}
