@@ -3,9 +3,12 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Layout } from '../../../components/Layout';
 import Head from 'next/head';
-import { Container, Grid, Text, Spacer, Link, Row, Card, Col, Image } from '@nextui-org/react';
+import { Container, Grid, Text, Spacer, Link, Row, Card, Col, Image, Tooltip } from '@nextui-org/react';
 import { GetStaticPropsResult } from 'next';
+import NextLink from 'next/link';
+import { PlusCircle } from 'phosphor-react';
 import { Item } from '@prisma/client';
+import { useState } from 'react';
 
 type ItemTemplate = {
   id: number;
@@ -59,6 +62,8 @@ export async function getStaticProps(context: any): Promise<GetStaticPropsResult
 }
 
 export default function ItemTemplatePage({ itemTemplate }: { itemTemplate: ItemTemplate }) {
+  const [isAdditionConfirmationVisible, setIsAdditionConfirmationVisible] = useState(false);
+  const [isItemAdditionSuccess, setIsItemAdditionSuccess] = useState(false);
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -70,23 +75,49 @@ export default function ItemTemplatePage({ itemTemplate }: { itemTemplate: ItemT
     renderNoItemTemplate();
   }
 
+  const handleItemAddition = async () => {
+    setIsAdditionConfirmationVisible(false);
+    console.log("Adding item to user's collection");
+    // TODO: Create item in users collection with defaults
+
+    setIsAdditionConfirmationVisible(true);
+    setIsItemAdditionSuccess(true);
+
+    setTimeout(() => {
+      setIsAdditionConfirmationVisible(false);
+    }, 3000);
+  };
+
   return (
     <Layout>
       <Head>
         <title>{`${itemTemplate.brand} ${itemTemplate.model} – Gearlist`}</title>
       </Head>
-      {/* <Container xl css={{ padding: '$10 $7' }}> */}
-
       <Container fluid>
-        <Row css={{ padding: '$15 0' }}>
-          <h1>
+        <Row css={{ padding: '$15 0', display: 'flex', alignItems: 'center' }}>
+          <Text h1 css={{ mr: '$10' }}>
             {itemTemplate.brand} {itemTemplate.model}
-          </h1>
+          </Text>
+          <Tooltip
+            placement="right"
+            color={isItemAdditionSuccess && isAdditionConfirmationVisible ? 'success' : 'primary'}
+            content={
+              // TODO: Add link to created item
+              isItemAdditionSuccess && isAdditionConfirmationVisible ? 'Added to your collection' : 'Add to collection'
+            }
+            visible={isAdditionConfirmationVisible}
+            shadow={true}
+            trigger={isAdditionConfirmationVisible ? 'click' : 'hover'}
+          >
+            {/* <NextLink href="/item/new"> */}
+            <Link color="inherit" title="Add item to collection" onClick={handleItemAddition}>
+              <PlusCircle size={28} weight="light" />
+            </Link>
+            {/* </NextLink> */}
+          </Tooltip>
         </Row>
         <Card>
-          {/* <Card.Body> */}
           <Row gap={1} css={{ padding: '$15 0' }}>
-            {/* <Card> */}
             <Col>
               <Image
                 width={350}
