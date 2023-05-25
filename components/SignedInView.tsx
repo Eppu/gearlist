@@ -45,10 +45,7 @@ export const SignedInView = () => {
             <Text>Loading...</Text>
           ) : (
             data.map((item, i) => (
-              <Grid
-                // xs={6} sm={3}
-                key={i}
-              >
+              <Grid xs={6} sm={3} key={i}>
                 <Card isPressable css={{ w: '100%', h: '300px' }}>
                   <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
                     <Col>
@@ -85,18 +82,6 @@ export const SignedInView = () => {
                       </Text>
                     </Col>
                   </Card.Footer>
-
-                  {/* <Card.Body css={{ p: 0 }}>
-                  <Card.Image src={item.image} objectFit="cover" width="100%" height={140} alt={item.title} />
-                </Card.Body>
-                <Card.Footer css={{ justifyItems: 'flex-start' }}>
-                  <Row wrap="wrap" justify="space-between" align="center">
-                    <Text b>
-                      {item.template.brand} {item.template.model}
-                    </Text>
-                    <Text css={{ color: '$accents7', fontWeight: '$semibold', fontSize: '$sm' }}>{item.price}</Text>
-                  </Row>
-                </Card.Footer> */}
                 </Card>
               </Grid>
             ))

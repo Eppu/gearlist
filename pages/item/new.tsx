@@ -7,7 +7,6 @@ import Dropzone from 'react-dropzone';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Trash } from 'phosphor-react';
-// import { supabase } from '../../lib/supabase';
 
 type Inputs = {
   brand: string;
