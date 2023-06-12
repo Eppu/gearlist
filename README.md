@@ -6,7 +6,7 @@
 
 <br>
 Gearlist is currently in development, and commits to the main branch will most likely include breaking changes. Please proceed with caution.
-The API structure is still under work too, so the endpoints will change in the future.
+The API structure is still under work too, so the endpoints will change in the future. I only work on this project when I have the time to do so, which is unfortunately very little these days.
 
 ---
 
