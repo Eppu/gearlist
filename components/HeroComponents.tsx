@@ -1,25 +1,28 @@
 import React from 'react';
-import { Card, Col, Text, styled, Grid, Container, Image } from '@nextui-org/react';
+import { Card, CardHeader, CardImage, Col, Text, Grid, Container, Image } from '@nextui-org/react';
+import styled from 'styled-components';
 
 import { levitating, appears } from '../utils/animations';
 
-const StyledContainer = styled('div', {
+const StyledContainer = styled.div`
   dflex: 'center',
   zIndex: '$max',
   '@xsMax': {
     display: 'none',
   },
-});
+`;
 
 export const Card1 = () => (
   <Card
-    css={{
-      animation: `${levitating} 15s ease infinite`,
-      boxShadow:
-        '0 50px 100px -20px rgba(50,50,93,.25),0 30px 60px -30px rgba(0,0,0,.3),inset 0 -2px 6px 0 rgba(10,37,64,.35);',
-    }}
+  // css={{
+  //   animation: `${levitating} 15s ease infinite`,
+  //   boxShadow:
+  //     '0 50px 100px -20px rgba(50,50,93,.25),0 30px 60px -30px rgba(0,0,0,.3),inset 0 -2px 6px 0 rgba(10,37,64,.35);',
+  // }}
   >
-    <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
+    <CardHeader
+    // css={{ position: 'absolute', zIndex: 1, top: 5 }}
+    >
       <Col>
         {/* <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
           What to watch
@@ -28,8 +31,8 @@ export const Card1 = () => (
           Stream the Acme event
         </Text> */}
       </Col>
-    </Card.Header>
-    <Card.Image
+    </CardHeader>
+    <CardImage
       // src="https://nextui.org/images/card-example-4.jpeg"
       src="/images/coll1.jpg"
       objectFit="cover"
@@ -49,7 +52,7 @@ export const Card2 = () => (
         '0 50px 100px -20px rgba(50,50,93,.25),0 30px 60px -30px rgba(0,0,0,.3),inset 0 -2px 6px 0 rgba(10,37,64,.35);',
     }}
   >
-    <Card.Header css={{ position: 'absolute', zIndex: 1, top: 5 }}>
+    <CardHeader css={{ position: 'absolute', zIndex: 1, top: 5 }}>
       <Col>
         {/* <Text size={12} weight="bold" transform="uppercase" color="#ffffffAA">
           Plant a tree
@@ -58,7 +61,7 @@ export const Card2 = () => (
           Contribute to the planet
         </Text> */}
       </Col>
-    </Card.Header>
+    </CardHeader>
     <Card.Image
       // src="https://nextui.org/images/card-example-3.jpeg"
       src="/images/coll4.jpg"
