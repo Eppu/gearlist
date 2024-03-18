@@ -1,6 +1,6 @@
-import { styled } from '@nextui-org/react';
+import styled from 'styled-components';
 
-export const StyledTitle = styled('h1', {
+export const StyledTitle = styled.h1`
   display: 'inline',
   fontFamily: 'Manrope',
   fontWeight: 'bold',
@@ -12,10 +12,9 @@ export const StyledTitle = styled('h1', {
   },
   '@lg': {
     fs: '3.5rem',
-  },
-});
+`;
 
-export const StyledGradientTitle = styled(StyledTitle, {
+export const StyledGradientTitle = styled(StyledTitle)`
   display: 'inline-block',
   marginTop: '2rem',
   textGradient: '180deg, #FF1CF7 25%, #b249f8 100%',
@@ -24,9 +23,9 @@ export const StyledGradientTitle = styled(StyledTitle, {
   },
   // This is to line text up properly on high-res wide displays
   paddingRight: '0.5rem',
-});
+`;
 
-export const StyledSubtitle = styled('p', {
+export const StyledSubtitle = styled.p`
   pl: '$1',
   fs: '$xl',
   fontFamily: 'Manrope',
@@ -34,4 +33,4 @@ export const StyledSubtitle = styled('p', {
   display: 'inline-flex',
   fontWeight: '$medium',
   color: '$accents7',
-});
+`;
